@@ -1,4 +1,4 @@
 Tiraggo.js
 ==========
 
-JavaScript ORM to Compliment the Main Tiraggo Architecture
+See http://brewdawg.github.com/Tiraggo.js/
