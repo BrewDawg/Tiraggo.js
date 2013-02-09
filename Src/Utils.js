@@ -1,4 +1,4 @@
-﻿/*globals tg, ko*/
+﻿/*global tg, ko*/
 
 /// <reference path="../Libs/jquery-1.9.0.min.js" />
 /// <reference path="../Libs/knockout-2.0.0.debug.js" />
@@ -18,7 +18,7 @@ var utils = {
 
             if (source.hasOwnProperty(prop)) {
 
-                if (target.tgTypeDefs && target.tgTypeDefs[prop]) continue; // skip heirarchtical
+                if (target.tgTypeDefs && target.tgTypeDefs[prop]) { continue; } // skip heirarchtical
 
                 srcProp = source[prop];
 
@@ -95,7 +95,7 @@ var utils = {
 
     startTracking: function (entity) {
 
-        var propertyName;
+        var propertyName, property;
 
         if (!entity.hasOwnProperty("RowState")) {
             entity.RowState = ko.observable(tg.RowState.ADDED);
@@ -119,7 +119,7 @@ var utils = {
                 propertyName !== 'tgExtendedData' &&
                 propertyName !== 'tg') {
 
-                var property = entity[propertyName];
+                property = entity[propertyName];
 
                 if (property instanceof Array) {
                     continue;
@@ -138,14 +138,13 @@ var utils = {
 
         var data,
             i,
-            ext,
             makeObservable = arguments[1] || false;
 
         if (entity.tgExtendedData && tg.isArray(entity.tgExtendedData)) {
 
             data = ko.isObservable(entity.tgExtendedData) ? entity.tgExtendedData() : entity.tgExtendedData;
 
-            for (i = 0; i < data.length; i++) {
+            for (i = 0; i < data.length; i = i + 1) {
 
                 if (ko.isObservable(entity[data[i].Key])) { //set the observable property
                     entity[data[i].Key](data[i].Value); // set the observable
@@ -198,7 +197,7 @@ var utils = {
                         arr = obj[propertyName].prepareForJSON();
                         dirtyGraph[propertyName] = [];
 
-                        for (index = 0; index < arr.length; index++) {
+                        for (index = 0; index < arr.length; index = index + 1) {
                             entity = arr[index];
                             tg.utils.getDirtyGraph(entity, root, dirtyGraph[propertyName]);
                         }
@@ -212,7 +211,7 @@ var utils = {
 
             arr = obj.prepareForJSON();
 
-            for (index = 0; index < arr.length; index++) {
+            for (index = 0; index < arr.length; index = index + 1) {
                 entity = arr[index];
                 tg.utils.getDirtyGraph(entity, root, root);
             }
@@ -226,7 +225,7 @@ utils.newId = (function () {
     var seedId = new Date().getTime();
 
     return function () {
-        return ++seedId;
+        return (seedId = seedId + 1);
     };
 
 } ());

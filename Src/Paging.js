@@ -1,4 +1,4 @@
-/*globals tg, ko*/
+/*global tg*/
 
 tg.PagerFilterCriteria = function () {
     this.column = null;

@@ -2,7 +2,7 @@
 // The Tiraggo.js JavaScript library v0.0.0 
 // Copyright (c) Mike Griffin 
 // 
-// Built on Sat 02/09/2013 at  7:44:14.60    
+// Built on Sat 02/09/2013 at  8:16:58.30    
 // https://github.com/BrewDawg/Tiraggo.js 
 // 
 // License: NOT YET DETERMINED 
@@ -14,14 +14,17 @@
 /*********************************************** 
 * FILE: ..\Src\Namespace.js 
 ***********************************************/ 
-﻿var tg = window['tg'] = {}; //define root namespace
+﻿/*global window*/
+
+var tg = window['tg'] = {}; //define root namespace
 
 // Google Closure Compiler helpers (used only to make the minified file smaller)
 tg.exportSymbol = function (publicPath, object) {
-    var tokens = publicPath.split(".");
-    var target = window;
-    for (var i = 0; i < tokens.length - 1; i++)
+    var tokens = publicPath.split("."), target = window, i;
+
+    for (i = 0; i < tokens.length - 1; i = i + 1) {
         target = target[tokens[i]];
+    }
     target[tokens[tokens.length - 1]] = object;
 };
 
@@ -49,11 +52,10 @@ config = extend(config, {
 //ensure the namespace is built out...
 (function () {
     
-    var path = config.namespace.split('.');
-    var target = window;
+    var path = config.namespace.split('.'), target = window, i;
 
-    for(var i = 0; i < path.length; i++){
-        if(target[path[i]] === undefined){
+    for (i = 0; i < path.length; i = i + 1) {
+        if (target[path[i]] === undefined) {
             target[path[i]] = {};
         }
         target = target[path[i]];
@@ -63,8 +65,7 @@ config = extend(config, {
 
 }());
 
-
-tg.getGeneratedNamespaceObj = function() {
+tg.getGeneratedNamespaceObj = function () {
     return tg.generatedNamespace;
 };
 
@@ -74,7 +75,8 @@ tg.exportSymbol('tg', tg);
 /*********************************************** 
 * FILE: ..\Src\Constants.js 
 ***********************************************/ 
-﻿
+﻿/*global tg*/
+
 tg.RowState = {
     INVALID: 0,
     UNCHANGED: 2,
@@ -89,28 +91,29 @@ tg.exportSymbol('tg.RowState', tg.RowState);
 /*********************************************** 
 * FILE: ..\Src\DateParser.js 
 ***********************************************/ 
-﻿
+﻿/*global tg*/
+
 tg.DateParser = function () {
 
     // From the Server
     this.deserialize = function (date) {
 
-        var newDate = date;
+        var offsetMinutes, timeOffset, newDate = date;
 
         //deserialize weird .NET Date strings
         if (typeof newDate === "string") {
             if (newDate.indexOf('/Date(') === 0) {
                 
-                var offsetMinutes = 0;
+                offsetMinutes = 0;
 
-                if(newDate.indexOf('-') === -1) {
-                    var timeOffset = new Date();
+                if (newDate.indexOf('-') === -1) {
+                    timeOffset = new Date();
                     offsetMinutes = timeOffset.getTimezoneOffset();
                 }
 
                 newDate = new Date(parseInt(newDate.substr(6)));
 				
-				if(offsetMinutes > 0) {
+				if (offsetMinutes > 0) {
 					newDate.setMinutes(newDate.getMinutes() + offsetMinutes);
 				}
             }
@@ -120,7 +123,7 @@ tg.DateParser = function () {
     };
 
     // To the Server
-    this.serialize = function (date, format) {
+    this.serialize = function (date) {
         return "\/Date(" + Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds(), 0)  + ")\/";
     };
 };  
@@ -129,7 +132,8 @@ tg.DateParser = function () {
 /*********************************************** 
 * FILE: ..\Src\Core.js 
 ***********************************************/ 
-﻿
+﻿/*global tg*/
+
 //#region TypeCache Methods
 tg.getType = function (typeName) {
     var ns = tg.getGeneratedNamespaceObj();
@@ -156,7 +160,7 @@ tg.isArray = function (array) {
 tg.objectKeys = Object.keys || function (obj) {
     var key, res = [];
     for (key in obj) {
-        rorm.push(key);
+        res.push(key);
     }
     return res;
 };
@@ -164,7 +168,7 @@ tg.objectKeys = Object.keys || function (obj) {
 tg.isTiraggoCollection = function (coll) {
     var isColl = false;
     if (coll !== undefined && coll.tg !== undefined) {
-		if(coll.tg.___TiraggoCollection___ !== undefined) {
+		if (coll.tg.___TiraggoCollection___ !== undefined) {
 			isColl = true;
 		}
     } else {
@@ -201,7 +205,7 @@ tg.exportSymbol('tg.isTiraggoCollection', tg.isTiraggoCollection);
 /*********************************************** 
 * FILE: ..\Src\utils.js 
 ***********************************************/ 
-﻿/*globals tg, ko*/
+﻿/*global tg, ko*/
 
 /// <reference path="../Libs/jquery-1.9.0.min.js" />
 /// <reference path="../Libs/knockout-2.0.0.debug.js" />
@@ -221,7 +225,7 @@ var utils = {
 
             if (source.hasOwnProperty(prop)) {
 
-                if (target.tgTypeDefs && target.tgTypeDefs[prop]) continue; // skip heirarchtical
+                if (target.tgTypeDefs && target.tgTypeDefs[prop]) { continue; } // skip heirarchtical
 
                 srcProp = source[prop];
 
@@ -298,7 +302,7 @@ var utils = {
 
     startTracking: function (entity) {
 
-        var propertyName;
+        var propertyName, property;
 
         if (!entity.hasOwnProperty("RowState")) {
             entity.RowState = ko.observable(tg.RowState.ADDED);
@@ -322,7 +326,7 @@ var utils = {
                 propertyName !== 'tgExtendedData' &&
                 propertyName !== 'tg') {
 
-                var property = entity[propertyName];
+                property = entity[propertyName];
 
                 if (property instanceof Array) {
                     continue;
@@ -341,14 +345,13 @@ var utils = {
 
         var data,
             i,
-            ext,
             makeObservable = arguments[1] || false;
 
         if (entity.tgExtendedData && tg.isArray(entity.tgExtendedData)) {
 
             data = ko.isObservable(entity.tgExtendedData) ? entity.tgExtendedData() : entity.tgExtendedData;
 
-            for (i = 0; i < data.length; i++) {
+            for (i = 0; i < data.length; i = i + 1) {
 
                 if (ko.isObservable(entity[data[i].Key])) { //set the observable property
                     entity[data[i].Key](data[i].Value); // set the observable
@@ -401,7 +404,7 @@ var utils = {
                         arr = obj[propertyName].prepareForJSON();
                         dirtyGraph[propertyName] = [];
 
-                        for (index = 0; index < arr.length; index++) {
+                        for (index = 0; index < arr.length; index = index + 1) {
                             entity = arr[index];
                             tg.utils.getDirtyGraph(entity, root, dirtyGraph[propertyName]);
                         }
@@ -415,7 +418,7 @@ var utils = {
 
             arr = obj.prepareForJSON();
 
-            for (index = 0; index < arr.length; index++) {
+            for (index = 0; index < arr.length; index = index + 1) {
                 entity = arr[index];
                 tg.utils.getDirtyGraph(entity, root, root);
             }
@@ -429,7 +432,7 @@ utils.newId = (function () {
     var seedId = new Date().getTime();
 
     return function () {
-        return ++seedId;
+        return (seedId = seedId + 1);
     };
 
 } ());
@@ -444,7 +447,7 @@ tg.exportSymbol('tg.getDirtyGraph', tg.getDirtyGraph);
 /*********************************************** 
 * FILE: ..\Src\Paging.js 
 ***********************************************/ 
-/*globals tg, ko*/
+/*global tg*/
 
 tg.PagerFilterCriteria = function () {
     this.column = null;

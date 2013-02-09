@@ -1,4 +1,5 @@
-﻿
+﻿/*global tg*/
+
 //#region TypeCache Methods
 tg.getType = function (typeName) {
     var ns = tg.getGeneratedNamespaceObj();
@@ -25,7 +26,7 @@ tg.isArray = function (array) {
 tg.objectKeys = Object.keys || function (obj) {
     var key, res = [];
     for (key in obj) {
-        rorm.push(key);
+        res.push(key);
     }
     return res;
 };
@@ -33,7 +34,7 @@ tg.objectKeys = Object.keys || function (obj) {
 tg.isTiraggoCollection = function (coll) {
     var isColl = false;
     if (coll !== undefined && coll.tg !== undefined) {
-		if(coll.tg.___TiraggoCollection___ !== undefined) {
+		if (coll.tg.___TiraggoCollection___ !== undefined) {
 			isColl = true;
 		}
     } else {

@@ -1,11 +1,14 @@
-﻿var tg = window['tg'] = {}; //define root namespace
+﻿/*global window*/
+
+var tg = window['tg'] = {}; //define root namespace
 
 // Google Closure Compiler helpers (used only to make the minified file smaller)
 tg.exportSymbol = function (publicPath, object) {
-    var tokens = publicPath.split(".");
-    var target = window;
-    for (var i = 0; i < tokens.length - 1; i++)
+    var tokens = publicPath.split("."), target = window, i;
+
+    for (i = 0; i < tokens.length - 1; i = i + 1) {
         target = target[tokens[i]];
+    }
     target[tokens[tokens.length - 1]] = object;
 };
 
@@ -33,11 +36,10 @@ config = extend(config, {
 //ensure the namespace is built out...
 (function () {
     
-    var path = config.namespace.split('.');
-    var target = window;
+    var path = config.namespace.split('.'), target = window, i;
 
-    for(var i = 0; i < path.length; i++){
-        if(target[path[i]] === undefined){
+    for (i = 0; i < path.length; i = i + 1) {
+        if (target[path[i]] === undefined) {
             target[path[i]] = {};
         }
         target = target[path[i]];
@@ -47,8 +49,7 @@ config = extend(config, {
 
 }());
 
-
-tg.getGeneratedNamespaceObj = function() {
+tg.getGeneratedNamespaceObj = function () {
     return tg.generatedNamespace;
 };
 

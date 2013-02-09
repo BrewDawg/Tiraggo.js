@@ -1,4 +1,5 @@
-﻿
+﻿/*global tg*/
+
 tg.RowState = {
     INVALID: 0,
     UNCHANGED: 2,
