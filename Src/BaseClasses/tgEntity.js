@@ -102,6 +102,7 @@ tg.TiraggoEntity = function () { //empty constructor
                 case 'tgRoutes':
                 case 'tgColumnMap':
                 case 'tgExtendedData':
+                case 'tgPrimaryKeys':				
                     break;
 
                 case 'RowState':
@@ -120,7 +121,7 @@ tg.TiraggoEntity = function () { //empty constructor
 
                         srcValue = ko.utils.unwrapObservable(self[key]);
 
-                        if (srcValue === null || (!tg.isTiraggoCollection(srcValue) && typeof srcValue !== "function" && srcValue !== undefined)) {
+                        if (srcValue === null || ( typeof srcValue !== "function" && srcValue !== undefined)) {
 
                             // This is a core column ...
                             if (srcValue !== null && srcValue instanceof Date) {
@@ -129,9 +130,23 @@ tg.TiraggoEntity = function () { //empty constructor
                                 stripped[key] = srcValue;
                             }
                         }
+                    } else {
+
+                        srcValue = self[key];
+
+                        // We have an embedded EsCollection, if it's dirty lets send it up
+                        if (es.isEsCollection(srcValue) && self[key].isDirty()) {
+
+                            var arrayOfObjects = srcValue();
+                            var arry = [];
+
+                            ko.utils.arrayForEach(arrayOfObjects, function (entity) {
+                                arry.push(entity.prepareForJSON());
+                            });
+                            stripped[key] = arry;
+                        }
                     }
                     break;
-
             }
         });
 

@@ -30,10 +30,20 @@ tg.XMLHttpRequestProvider = function () {
 
     executeCompleted = function (responseText, route) {
 
-        var response = {
-            data: JSON.parse(responseText),
-            error: undefined
-        };
+        var response;
+
+        if(responseText === "") {
+            response = {
+                data: "",
+                error: undefined
+            };
+
+        } else {
+            response = {
+                data: JSON.parse(responseText),
+                error: undefined
+            };
+        }
 
         if (route.response !== undefined) {
             switch (route.response) {
@@ -66,7 +76,7 @@ tg.XMLHttpRequestProvider = function () {
         xmlHttp.open("POST", path, options.async || false);
         xmlHttp.setRequestHeader("Content-type", "application/json; charset=utf-8");
 		// Hack to make it work with FireFox
-        xmlHttp.setRequestHeader("accept", "text/html,application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");		
+        xmlHttp.setRequestHeader("accept", "gzip,deflate,text/html,application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");			
 
         if (options.async === true) {
             xmlHttp.onreadystatechange = function () {
@@ -120,14 +130,17 @@ tg.XMLHttpRequestProvider = function () {
         xmlHttp.open("POST", path, async);
         xmlHttp.setRequestHeader("Content-type", "application/json; charset=utf-8");
 		// Hack to make it work with FireFox
-        xmlHttp.setRequestHeader("accept", "text/html,application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-		
+        xmlHttp.setRequestHeader("accept", "gzip,deflate,text/html,application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");		
 
         if (async === true) {
             xmlHttp.onreadystatechange = function () {
                 if (xmlHttp.readyState === 4) {
                     if (xmlHttp.status === 200) {
-                        success(JSON.parse(xmlHttp.responseText), state);
+                        if (xmlHttp.responseText && xmlHttp.responseText.length > 0) {
+                            success(JSON.parse(xmlHttp.responseText), state);
+                        } else {
+                            success(xmlHttp.responseText, state);
+                        }
                     } else {
                         failure(xmlHttp.status, xmlHttp.statusText, state);
                     }

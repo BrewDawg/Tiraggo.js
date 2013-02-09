@@ -32,7 +32,7 @@ DEL %OutPutFile%
 @ECHO // License: NOT YET DETERMINED >> %OutPutFile%
 @ECHO //-------------------------------------------------------------------- >> %OutPutFile%
 @ECHO. >>%OutPutFile%
-@ECHO (function(window, undefined) { >> %OutPutFile%
+@ECHO (function(window) { >> %OutPutFile%
 @TYPE %OutPutFile%.temp >> %OutPutFile%
 @ECHO }(window)); >> %OutPutFile%
 ECHO JSBuild Succeeded
@@ -74,7 +74,7 @@ DEL %OutPutFile%
 @ECHO // License: NOT YET DETERMINED >> %OutPutFile%
 @ECHO //-------------------------------------------------------------------- >> %OutPutFile%
 @ECHO. >>%OutPutFile%
-@ECHO (function(window, undefined) { >> %OutPutFile%
+@ECHO (function(window) { >> %OutPutFile%
 @TYPE %OutPutFile%.temp >> %OutPutFile%
 @ECHO }(window)); >> %OutPutFile%
 ECHO JSBuild Succeeded

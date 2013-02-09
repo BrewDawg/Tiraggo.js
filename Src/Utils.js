@@ -26,7 +26,7 @@ var utils = {
                     srcProp = utils.dateParser.deserialize(srcProp);
                 }
 
-                if (ko.isObservable(target[prop])) { //set the observable property
+                if (ko.isObservable(target[prop]) || ko.isComputed(target[prop])) { //set the observable property
                     target[prop](srcProp); // set the observable
                 } else {
                     target[prop] = srcProp;
@@ -158,7 +158,7 @@ var utils = {
                 }
             }
 
-            delete entity.tgExtendedData;
+            entity.tgExtendedData = [];
         }
 
         return entity;
