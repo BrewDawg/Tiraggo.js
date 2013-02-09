@@ -135,7 +135,7 @@ tg.TiraggoEntity = function () { //empty constructor
                         srcValue = self[key];
 
                         // We have an embedded EsCollection, if it's dirty lets send it up
-                        if (es.isEsCollection(srcValue) && self[key].isDirty()) {
+                        if (tg.isTiraggoCollection(srcValue) && self[key].isDirty()) {
 
                             var arrayOfObjects = srcValue();
                             var arry = [];

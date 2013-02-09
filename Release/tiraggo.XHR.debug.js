@@ -2,13 +2,13 @@
 // The Tiraggo.js JavaScript library v0.0.0 
 // Copyright (c) Mike Griffin 
 // 
-// Built on Fri 02/08/2013 at 20:11:25.14    
+// Built on Fri 02/08/2013 at 21:25:00.69    
 // https://github.com/BrewDawg/Tiraggo.js 
 // 
 // License: NOT YET DETERMINED 
 //-------------------------------------------------------------------- 
  
-(function(window, undefined) { 
+(function(window) { 
  
  
 /*********************************************** 
@@ -227,7 +227,7 @@ var utils = {
                     srcProp = utils.dateParser.deserialize(srcProp);
                 }
 
-                if (ko.isObservable(target[prop])) { //set the observable property
+                if (ko.isObservable(target[prop]) || ko.isComputed(target[prop])) { //set the observable property
                     target[prop](srcProp); // set the observable
                 } else {
                     target[prop] = srcProp;
@@ -359,7 +359,7 @@ var utils = {
                 }
             }
 
-            delete entity.tgExtendedData;
+            entity.tgExtendedData = [];
         }
 
         return entity;
@@ -647,6 +647,7 @@ tg.TiraggoEntity = function () { //empty constructor
                 case 'tgRoutes':
                 case 'tgColumnMap':
                 case 'tgExtendedData':
+                case 'tgPrimaryKeys':				
                     break;
 
                 case 'RowState':
@@ -665,7 +666,7 @@ tg.TiraggoEntity = function () { //empty constructor
 
                         srcValue = ko.utils.unwrapObservable(self[key]);
 
-                        if (srcValue === null || (!tg.isTiraggoCollection(srcValue) && typeof srcValue !== "function" && srcValue !== undefined)) {
+                        if (srcValue === null || ( typeof srcValue !== "function" && srcValue !== undefined)) {
 
                             // This is a core column ...
                             if (srcValue !== null && srcValue instanceof Date) {
@@ -674,9 +675,23 @@ tg.TiraggoEntity = function () { //empty constructor
                                 stripped[key] = srcValue;
                             }
                         }
+                    } else {
+
+                        srcValue = self[key];
+
+                        // We have an embedded EsCollection, if it's dirty lets send it up
+                        if (tg.isTiraggoCollection(srcValue) && self[key].isDirty()) {
+
+                            var arrayOfObjects = srcValue();
+                            var arry = [];
+
+                            ko.utils.arrayForEach(arrayOfObjects, function (entity) {
+                                arry.push(entity.prepareForJSON());
+                            });
+                            stripped[key] = arry;
+                        }
                     }
                     break;
-
             }
         });
 
@@ -1558,10 +1573,20 @@ tg.XMLHttpRequestProvider = function () {
 
     executeCompleted = function (responseText, route) {
 
-        var response = {
-            data: JSON.parse(responseText),
-            error: undefined
-        };
+        var response;
+
+        if(responseText === "") {
+            response = {
+                data: "",
+                error: undefined
+            };
+
+        } else {
+            response = {
+                data: JSON.parse(responseText),
+                error: undefined
+            };
+        }
 
         if (route.response !== undefined) {
             switch (route.response) {
@@ -1594,7 +1619,7 @@ tg.XMLHttpRequestProvider = function () {
         xmlHttp.open("POST", path, options.async || false);
         xmlHttp.setRequestHeader("Content-type", "application/json; charset=utf-8");
 		// Hack to make it work with FireFox
-        xmlHttp.setRequestHeader("accept", "text/html,application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");		
+        xmlHttp.setRequestHeader("accept", "gzip,deflate,text/html,application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");			
 
         if (options.async === true) {
             xmlHttp.onreadystatechange = function () {
@@ -1648,14 +1673,17 @@ tg.XMLHttpRequestProvider = function () {
         xmlHttp.open("POST", path, async);
         xmlHttp.setRequestHeader("Content-type", "application/json; charset=utf-8");
 		// Hack to make it work with FireFox
-        xmlHttp.setRequestHeader("accept", "text/html,application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-		
+        xmlHttp.setRequestHeader("accept", "gzip,deflate,text/html,application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");		
 
         if (async === true) {
             xmlHttp.onreadystatechange = function () {
                 if (xmlHttp.readyState === 4) {
                     if (xmlHttp.status === 200) {
-                        success(JSON.parse(xmlHttp.responseText), state);
+                        if (xmlHttp.responseText && xmlHttp.responseText.length > 0) {
+                            success(JSON.parse(xmlHttp.responseText), state);
+                        } else {
+                            success(xmlHttp.responseText, state);
+                        }
                     } else {
                         failure(xmlHttp.status, xmlHttp.statusText, state);
                     }

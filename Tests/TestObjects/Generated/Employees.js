@@ -37,8 +37,6 @@
         // Hierarchical Properties
         this.EmployeesCollectionByReportsTo = tg.defineLazyLoader(this, 'EmployeesCollectionByReportsTo');
         this.UpToEmployeesByReportsTo = tg.defineLazyLoader(this, 'UpToEmployeesByReportsTo');
-        this.UpToTerritoriesCollection = tg.defineLazyLoader(this, 'UpToTerritoriesCollection');
-        this.EmployeeTerritoriesCollectionByEmployeeID = tg.defineLazyLoader(this, 'EmployeeTerritoriesCollectionByEmployeeID');
         this.OrdersCollectionByEmployeeID = tg.defineLazyLoader(this, 'OrdersCollectionByEmployeeID');
     });
 
@@ -47,8 +45,6 @@
     tg.objects.Employees.prototype.tgTypeDefs = {
         EmployeesCollectionByReportsTo: "EmployeesCollection",
         UpToEmployeesByReportsTo: "Employees",
-        UpToTerritoriesCollection: "TerritoriesCollection",
-        EmployeeTerritoriesCollectionByEmployeeID: "EmployeeTerritoriesCollection",
         OrdersCollectionByEmployeeID: "OrdersCollection"
     };
 
@@ -57,8 +53,6 @@
         loadByPrimaryKey: { method: 'GET', url: 'Employees_LoadByPrimaryKey', response: 'entity' },
         EmployeesCollectionByReportsTo: { method: 'GET', url: 'Employees_EmployeesCollectionByReportsTo', response: 'collection' },
         UpToEmployeesByReportsTo: { method: 'GET', url: 'Employees_UpToEmployeesByReportsTo', response: 'entity' },
-        UpToTerritoriesCollection: { method: 'GET', url: 'Employees_UpToTerritoriesCollection', response: 'collection' },
-        EmployeeTerritoriesCollectionByEmployeeID: { method: 'GET', url: 'Employees_EmployeeTerritoriesCollectionByEmployeeID', response: 'collection' },
         OrdersCollectionByEmployeeID: { method: 'GET', url: 'Employees_OrdersCollectionByEmployeeID', response: 'collection' }
     };
 
