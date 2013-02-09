@@ -1,0 +1,12 @@
+..\Src\Namespace.js
+..\Src\Constants.js
+..\Src\DateParser.js
+..\Src\Core.js
+..\Src\utils.js
+..\Src\Paging.js
+..\Src\BaseClasses\tgLazyLoader.js
+..\Src\BaseClasses\tgEntity.js
+..\Src\BaseClasses\tgEntityCollection.js
+..\Src\BaseClasses\DefineEntity.js
+..\Src\BaseClasses\DefineCollection.js
+..\Src\Providers\XMLHttpRequestProvider.js
