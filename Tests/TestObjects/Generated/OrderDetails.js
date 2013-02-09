@@ -1,7 +1,7 @@
 (function (tg) { //myNS = "myNameSpace" ... for example purposes
 
 	if (typeof (tg) === undefined) {
-		throw "Please Load EntitySpaces.Core First";
+		throw "Please Load Tiraggo.Core First";
 	}
 
 	tg.objects.OrderDetails = tg.defineEntity(function () {
