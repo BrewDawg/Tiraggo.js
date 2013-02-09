@@ -1,11 +1,8 @@
-﻿/*globals es */
-/// <reference path="../Libs/jquery-1.7.1.js" />
-/// <reference path="../Libs/json2.js" />
-/// <reference path="../Libs/knockout-2.0.0.debug.js" />
-/// <reference path="../Constants.js" />
-/// <reference path="../Namespace.js" />
-/// <reference path="../Utils.js" />
+﻿/*global tg, utils */
 
+//
+//    Copyright (c) Mike Griffin, 2013 
+//
 
 tg.TiraggoEntity = function () { //empty constructor
     var extenders = [];
@@ -121,7 +118,7 @@ tg.TiraggoEntity = function () { //empty constructor
 
                         srcValue = ko.utils.unwrapObservable(self[key]);
 
-                        if (srcValue === null || ( typeof srcValue !== "function" && srcValue !== undefined)) {
+                        if (srcValue === null || (typeof srcValue !== "function" && srcValue !== undefined)) {
 
                             // This is a core column ...
                             if (srcValue !== null && srcValue instanceof Date) {

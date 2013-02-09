@@ -1,7 +1,12 @@
-﻿tg.tgLazyLoader = function (entity, propName) {
+﻿/*global tg */
 
-    var self = entity,
-        data;
+//
+//    Copyright (c) Mike Griffin, 2013 
+//
+
+tg.tgLazyLoader = function (entity, propName) {
+
+    var self = entity;
 
     var tgLazyLoader = function () {
 
@@ -14,7 +19,7 @@
                 val = self.createObjectFromType(self.tgTypeDefs[propName]);
 
                 if (val === undefined) {
-                    throw "Please include the JavaScript class file for the '" + type + "'";
+                    throw "Please include the JavaScript class file for the '" + propName + "'";
                 }
 
                 val.load({

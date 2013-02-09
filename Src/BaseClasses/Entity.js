@@ -1,11 +1,8 @@
-﻿/*globals es */
-/// <reference path="../Libs/jquery-1.9.0.min.js" />
-/// <reference path="../Libs/json2.js" />
-/// <reference path="../Libs/knockout-2.2.1.debug.js" />
-/// <reference path="../Constants.js" />
-/// <reference path="../Namespace.js" />
-/// <reference path="../Utils.js" />
+﻿/*global tg, utils */
 
+//
+//    Copyright (c) Mike Griffin, 2013 
+//
 
 tg.TiraggoEntity = function () { //empty constructor
     var extenders = [];
@@ -259,8 +256,7 @@ tg.TiraggoEntity = function () { //empty constructor
 
     //#region Loads
     this.load = function (options) {
-        var state = {},
-            self = this;
+        var state = {}, successHandler, errorHandler, self = this;
 
         self.tg.isLoading(true);
 
@@ -280,8 +276,8 @@ tg.TiraggoEntity = function () { //empty constructor
         }
 
         //sprinkle in our own handlers, but make sure the original still gets called
-        var successHandler = options.success;
-        var errorHandler = options.error;
+        successHandler = options.success;
+        errorHandler = options.error;
 
         //wrap the passed in success handler so that we can populate the Entity
         options.success = function (data, options) {
@@ -334,11 +330,11 @@ tg.TiraggoEntity = function () { //empty constructor
 
     //#region Save
     this.save = function (success, error, state) {
-        var self = this;
+        var options, successHandler, errorHandler, self = this;
 
         self.tg.isLoading(true);
 
-        var options = { success: success, error: error, state: state, route: self.tgRoutes['commit'] };
+        options = { success: success, error: error, state: state, route: self.tgRoutes['commit'] };
 
         switch (self.RowState()) {
             case tg.RowState.ADDED:
@@ -380,8 +376,8 @@ tg.TiraggoEntity = function () { //empty constructor
             options.type = options.route.method;
         }
 
-        var successHandler = options.success,
-            errorHandler = options.error;
+        successHandler = options.success;
+        errorHandler = options.error;
 
         options.success = function (data, options) {
             self.populateEntity(data);

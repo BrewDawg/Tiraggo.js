@@ -1,9 +1,13 @@
-﻿
-tg.defineCollection = function (typeName, entityName) {
-    var isAnonymous = (typeof (typeName) !== 'string'),
-        ctorName = isAnonymous ? arguments[0] : arguments[1];
+﻿/*global tg */
 
-    var tgCollCtor = function (data) {
+//
+//    Copyright (c) Mike Griffin, 2013 
+//
+
+tg.defineCollection = function (typeName, entityName) {
+    var isAnonymous = (typeof (typeName) !== 'string'), tgCollCtor, ctorName = isAnonymous ? arguments[0] : arguments[1];
+
+    tgCollCtor = function (data) {
 
         var coll = new tg.TiraggoEntityCollection();
 
@@ -54,7 +58,7 @@ tg.defineCollection = function (typeName, entityName) {
                 } else if (arr.length > 0 && arr[arr.length - 1].isDirty()) {
                     dirty = true;
                 } else {
-                    for (i = 0; i < arr.length; i++) {
+                    for (i = 0; i < arr.length; i = i + 1) {
 
                         entity = arr[i];
 
@@ -83,7 +87,7 @@ tg.defineCollection = function (typeName, entityName) {
                 } else if (arr.length > 0 && arr[arr.length - 1].isDirty()) {
                     dirty = true;
                 } else {
-                    for (i = 0; i < arr.length; i++) {
+                    for (i = 0; i < arr.length; i = i + 1) {
 
                         entity = arr[i];
 

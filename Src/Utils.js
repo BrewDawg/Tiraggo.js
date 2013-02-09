@@ -1,7 +1,8 @@
 ﻿/*global tg, ko*/
 
-/// <reference path="../Libs/jquery-1.9.0.min.js" />
-/// <reference path="../Libs/knockout-2.0.0.debug.js" />
+//
+//    Copyright (c) Mike Griffin, 2013 
+//
 
 var utils = {
 

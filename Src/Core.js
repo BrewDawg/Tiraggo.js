@@ -1,5 +1,9 @@
 ﻿/*global tg*/
 
+//
+//    Copyright (c) Mike Griffin, 2013 
+//
+
 //#region TypeCache Methods
 tg.getType = function (typeName) {
     var ns = tg.getGeneratedNamespaceObj();

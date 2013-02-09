@@ -23,10 +23,10 @@ DEL %OutPutFile%
 
 @REM Wrap the final output in an IIFE
 @ECHO //-------------------------------------------------------------------- >> %OutPutFile%
-@ECHO // The Tiraggo.js JavaScript library v0.0.0 >> %OutPutFile%
+@ECHO // The Tiraggo.js JavaScript library v1.0.0 >> %OutPutFile%
 @ECHO // Copyright (c) Mike Griffin >> %OutPutFile%
 @ECHO // >> %OutPutFile%
-@ECHO // Built on %Date% at %Time%  >> %OutPutFile%  
+@ECHO // Built on %Date% at %Time% >> %OutPutFile%  
 @ECHO // https://github.com/BrewDawg/Tiraggo.js >> %OutPutFile%
 @ECHO // >> %OutPutFile%
 @ECHO // License: NOT YET DETERMINED >> %OutPutFile%
@@ -65,10 +65,10 @@ DEL %OutPutFile%
 
 @REM Wrap the final output in an IIFE
 @ECHO //-------------------------------------------------------------------- >> %OutPutFile%
-@ECHO // The Tiraggo.js JavaScript library v0.0.0 >> %OutPutFile%
+@ECHO // The Tiraggo.js JavaScript library v1.0.0 >> %OutPutFile%
 @ECHO // Copyright (c) Mike Griffin >> %OutPutFile%
 @ECHO // >> %OutPutFile%
-@ECHO // Built on %Date% at %Time%  >> %OutPutFile%  
+@ECHO // Built on %Date% at %Time% >> %OutPutFile%  
 @ECHO // https://github.com/BrewDawg/Tiraggo.js >> %OutPutFile%
 @ECHO // >> %OutPutFile%
 @ECHO // License: NOT YET DETERMINED >> %OutPutFile%

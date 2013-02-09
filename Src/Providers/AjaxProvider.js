@@ -1,13 +1,14 @@
-﻿/*globals grv*/
-/// <reference path="../Libs/jquery-1.9.0.min.js" />
-/// <reference path="../Libs/json2.js" />
+﻿/*global tg*/
+
+//
+//    Copyright (c) Mike Griffin, 2013 
+//
 
 //set this up so we match jQuery's api style... if we want to rip it out later, we can...
 tg.AjaxProvider = function () {
     var noop = function () { };
     var parameterizeUrl = function (url, data) {
-        var rurlDataExpr = /\{([^\}]+)\}/g;
-        var newUrl;
+        var newUrl, rurlDataExpr = /\{([^\}]+)\}/g;
 
         if (typeof data === "string") {
             return;

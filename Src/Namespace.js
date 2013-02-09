@@ -1,5 +1,9 @@
 ﻿/*global window*/
 
+//
+//    Copyright (c) Mike Griffin, 2013 
+//
+
 var tg = window['tg'] = {}; //define root namespace
 
 // Google Closure Compiler helpers (used only to make the minified file smaller)

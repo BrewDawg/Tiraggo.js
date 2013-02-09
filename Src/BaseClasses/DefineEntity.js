@@ -1,9 +1,13 @@
-﻿
-tg.defineEntity = function (typeName, constrctor) {
-    var isAnonymous = (typeof (typeName) !== 'string'),
-        Ctor = isAnonymous ? arguments[0] : arguments[1];
+﻿/*global tg */
 
-    var tgCtor = function (data) {
+//
+//    Copyright (c) Mike Griffin, 2013 
+//
+
+tg.defineEntity = function (typeName, constrctor) {
+    var isAnonymous = (typeof (typeName) !== 'string'), tgCtor, Ctor = isAnonymous ? arguments[0] : arguments[1];
+
+    tgCtor = function (data) {
         this.tg = {};
 
         //MUST do this here so that obj.hasOwnProperty actually returns the keys in the object!

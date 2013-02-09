@@ -1,8 +1,8 @@
 //-------------------------------------------------------------------- 
-// The Tiraggo.js JavaScript library v0.0.0 
+// The Tiraggo.js JavaScript library v1.0.0 
 // Copyright (c) Mike Griffin 
 // 
-// Built on Sat 02/09/2013 at  8:16:40.56    
+// Built on Sat 02/09/2013 at  9:06:06.93   
 // https://github.com/BrewDawg/Tiraggo.js 
 // 
 // License: NOT YET DETERMINED 
@@ -15,6 +15,10 @@
 * FILE: ..\Src\Namespace.js 
 ***********************************************/ 
 ﻿/*global window*/
+
+//
+//    Copyright (c) Mike Griffin, 2013 
+//
 
 var tg = window['tg'] = {}; //define root namespace
 
@@ -77,6 +81,10 @@ tg.exportSymbol('tg', tg);
 ***********************************************/ 
 ﻿/*global tg*/
 
+//
+//    Copyright (c) Mike Griffin, 2013 
+//
+
 tg.RowState = {
     INVALID: 0,
     UNCHANGED: 2,
@@ -92,6 +100,10 @@ tg.exportSymbol('tg.RowState', tg.RowState);
 * FILE: ..\Src\DateParser.js 
 ***********************************************/ 
 ﻿/*global tg*/
+
+//
+//    Copyright (c) Mike Griffin, 2013 
+//
 
 tg.DateParser = function () {
 
@@ -133,6 +145,10 @@ tg.DateParser = function () {
 * FILE: ..\Src\Core.js 
 ***********************************************/ 
 ﻿/*global tg*/
+
+//
+//    Copyright (c) Mike Griffin, 2013 
+//
 
 //#region TypeCache Methods
 tg.getType = function (typeName) {
@@ -207,8 +223,9 @@ tg.exportSymbol('tg.isTiraggoCollection', tg.isTiraggoCollection);
 ***********************************************/ 
 ﻿/*global tg, ko*/
 
-/// <reference path="../Libs/jquery-1.9.0.min.js" />
-/// <reference path="../Libs/knockout-2.0.0.debug.js" />
+//
+//    Copyright (c) Mike Griffin, 2013 
+//
 
 var utils = {
 
@@ -449,6 +466,10 @@ tg.exportSymbol('tg.getDirtyGraph', tg.getDirtyGraph);
 ***********************************************/ 
 /*global tg*/
 
+//
+//    Copyright (c) Mike Griffin, 2013 
+//
+
 tg.PagerFilterCriteria = function () {
     this.column = null;
     this.criteria1 = null;
@@ -476,10 +497,15 @@ tg.PagerRequest = function () {
 /*********************************************** 
 * FILE: ..\Src\BaseClasses\tgLazyLoader.js 
 ***********************************************/ 
-﻿tg.tgLazyLoader = function (entity, propName) {
+﻿/*global tg */
 
-    var self = entity,
-        data;
+//
+//    Copyright (c) Mike Griffin, 2013 
+//
+
+tg.tgLazyLoader = function (entity, propName) {
+
+    var self = entity;
 
     var tgLazyLoader = function () {
 
@@ -492,7 +518,7 @@ tg.PagerRequest = function () {
                 val = self.createObjectFromType(self.tgTypeDefs[propName]);
 
                 if (val === undefined) {
-                    throw "Please include the JavaScript class file for the '" + type + "'";
+                    throw "Please include the JavaScript class file for the '" + propName + "'";
                 }
 
                 val.load({
@@ -548,14 +574,11 @@ tg.defineLazyLoader = function (entity, propName) {
 /*********************************************** 
 * FILE: ..\Src\BaseClasses\tgEntity.js 
 ***********************************************/ 
-﻿/*globals es */
-/// <reference path="../Libs/jquery-1.7.1.js" />
-/// <reference path="../Libs/json2.js" />
-/// <reference path="../Libs/knockout-2.0.0.debug.js" />
-/// <reference path="../Constants.js" />
-/// <reference path="../Namespace.js" />
-/// <reference path="../Utils.js" />
+﻿/*global tg, utils */
 
+//
+//    Copyright (c) Mike Griffin, 2013 
+//
 
 tg.TiraggoEntity = function () { //empty constructor
     var extenders = [];
@@ -671,7 +694,7 @@ tg.TiraggoEntity = function () { //empty constructor
 
                         srcValue = ko.utils.unwrapObservable(self[key]);
 
-                        if (srcValue === null || ( typeof srcValue !== "function" && srcValue !== undefined)) {
+                        if (srcValue === null || (typeof srcValue !== "function" && srcValue !== undefined)) {
 
                             // This is a core column ...
                             if (srcValue !== null && srcValue instanceof Date) {
@@ -980,11 +1003,11 @@ tg.exportSymbol('tg.TiraggoEntity.save', tg.TiraggoEntity.save);
 /*********************************************** 
 * FILE: ..\Src\BaseClasses\tgEntityCollection.js 
 ***********************************************/ 
-﻿/*globals tg*/
-/// <reference path="../../Libs/jquery-1.7.1.js" />
-/// <reference path="../../Libs/json2.js" />
-/// <reference path="../../Libs/knockout-2.0.0.debug.js" />
+﻿/*global tg*/
 
+//
+//    Copyright (c) Mike Griffin, 2013 
+//
 
 tg.TiraggoEntityCollection = function () {
     var obs = ko.observableArray([]);
@@ -1061,7 +1084,7 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
 
 
         if (addedEntities.length > 0) {
-            for (index = addedEntities.length - 1; index >= 0; index--) {
+            for (index = addedEntities.length - 1; index >= 0; index = index - 1) {
                 this.tg.deletedEntities.splice(addedEntities[index], 1);
             }
         }
@@ -1081,7 +1104,7 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
         });
 
         if (addedEntities.length > 0) {
-            for (i = 0; i < addedEntities.length; i++) {
+            for (i = 0; i < addedEntities.length; i = i + 1) {
                 index = ko.utils.arrayIndexOf(self(), addedEntities[i]);
                 if (index >= 0) {
                     self.splice(index, 1);
@@ -1128,7 +1151,7 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
     // Can be a single entity or an array of entities
     markAsDeleted: function (entitiesOrEntityToDelete) {
 
-        var i, entity, coll, len, arr, tempArr = [], self = this;
+        var i, entity, coll, len, arr, tempArr = [];
 
         if (!arguments) {
             throw new Error("The entitiesOrEntityToDelete cannot be null or undefined.");
@@ -1142,7 +1165,7 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
                 throw new Error("The array passed in to markAsDeleted.markAsDeleted() cannot be empty.");
             }
         } else {
-            for (i = 0; i < arguments.length; i++) {
+            for (i = 0; i < arguments.length; i = i + 1) {
                 if (tg.isTiraggoEntity(arguments[i])) {
                     tempArr.push(arguments[i]);
                 } else {
@@ -1184,8 +1207,7 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
             EntityCtor,
             finalColl = [],
             create = this.createEntity,
-            entity,
-            self = this;
+            entity;
 
         if (entityTypeName) {
             EntityCtor = tg.getType(entityTypeName); //might return undefined
@@ -1245,7 +1267,7 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
 
     //#region Loads
     load: function (options) {
-        var self = this;
+        var self = this, successHandler, errorHandler;
 
         self.tg.isLoading(true);
 
@@ -1262,8 +1284,8 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
         }
 
         //sprinkle in our own handlers, but make sure the original still gets called
-        var successHandler = options.success, 
-            errorHandler = options.error;
+        successHandler = options.success;
+        errorHandler = options.error;
 
         //wrap the passed in success handler so that we can populate the Entity
         options.success = function (data, options) {
@@ -1308,11 +1330,11 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
 
     //#region Save
     save: function (success, error, state) {
-        var self = this;
+        var self = this, options, successHandler, errorHandler;
 
         self.tg.isLoading(true);
 
-        var options = { success: success, error: error, state: state, route: self.tgRoutes['commit'] };
+        options = { success: success, error: error, state: state, route: self.tgRoutes['commit'] };
 
         if (arguments.length === 1 && arguments[0] && typeof arguments[0] === 'object') {
             tg.utils.extend(options, arguments[0]);
@@ -1342,8 +1364,8 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
             options.type = options.route.method;
         }
 
-        var successHandler = options.success;
-        var errorHandler = options.error;
+        successHandler = options.success;
+        errorHandler = options.error;
 
         options.success = function (data, options) {
             self.tg.deletedEntities([]);
@@ -1376,12 +1398,16 @@ tg.exportSymbol('tg.TiraggoEntityCollection.save', tg.TiraggoEntityCollection.sa
 /*********************************************** 
 * FILE: ..\Src\BaseClasses\DefineEntity.js 
 ***********************************************/ 
-﻿
-tg.defineEntity = function (typeName, constrctor) {
-    var isAnonymous = (typeof (typeName) !== 'string'),
-        Ctor = isAnonymous ? arguments[0] : arguments[1];
+﻿/*global tg */
 
-    var tgCtor = function (data) {
+//
+//    Copyright (c) Mike Griffin, 2013 
+//
+
+tg.defineEntity = function (typeName, constrctor) {
+    var isAnonymous = (typeof (typeName) !== 'string'), tgCtor, Ctor = isAnonymous ? arguments[0] : arguments[1];
+
+    tgCtor = function (data) {
         this.tg = {};
 
         //MUST do this here so that obj.hasOwnProperty actually returns the keys in the object!
@@ -1416,12 +1442,16 @@ tg.exportSymbol('tg.defineEntity', tg.defineEntity);
 /*********************************************** 
 * FILE: ..\Src\BaseClasses\DefineCollection.js 
 ***********************************************/ 
-﻿
-tg.defineCollection = function (typeName, entityName) {
-    var isAnonymous = (typeof (typeName) !== 'string'),
-        ctorName = isAnonymous ? arguments[0] : arguments[1];
+﻿/*global tg */
 
-    var tgCollCtor = function (data) {
+//
+//    Copyright (c) Mike Griffin, 2013 
+//
+
+tg.defineCollection = function (typeName, entityName) {
+    var isAnonymous = (typeof (typeName) !== 'string'), tgCollCtor, ctorName = isAnonymous ? arguments[0] : arguments[1];
+
+    tgCollCtor = function (data) {
 
         var coll = new tg.TiraggoEntityCollection();
 
@@ -1472,7 +1502,7 @@ tg.defineCollection = function (typeName, entityName) {
                 } else if (arr.length > 0 && arr[arr.length - 1].isDirty()) {
                     dirty = true;
                 } else {
-                    for (i = 0; i < arr.length; i++) {
+                    for (i = 0; i < arr.length; i = i + 1) {
 
                         entity = arr[i];
 
@@ -1501,7 +1531,7 @@ tg.defineCollection = function (typeName, entityName) {
                 } else if (arr.length > 0 && arr[arr.length - 1].isDirty()) {
                     dirty = true;
                 } else {
-                    for (i = 0; i < arr.length; i++) {
+                    for (i = 0; i < arr.length; i = i + 1) {
 
                         entity = arr[i];
 
@@ -1546,16 +1576,17 @@ tg.exportSymbol('tg.defineCollection', tg.defineCollection);
 /*********************************************** 
 * FILE: ..\Src\Providers\AjaxProvider.js 
 ***********************************************/ 
-﻿/*globals grv*/
-/// <reference path="../Libs/jquery-1.9.0.min.js" />
-/// <reference path="../Libs/json2.js" />
+﻿/*global tg*/
+
+//
+//    Copyright (c) Mike Griffin, 2013 
+//
 
 //set this up so we match jQuery's api style... if we want to rip it out later, we can...
 tg.AjaxProvider = function () {
     var noop = function () { };
     var parameterizeUrl = function (url, data) {
-        var rurlDataExpr = /\{([^\}]+)\}/g;
-        var newUrl;
+        var newUrl, rurlDataExpr = /\{([^\}]+)\}/g;
 
         if (typeof data === "string") {
             return;

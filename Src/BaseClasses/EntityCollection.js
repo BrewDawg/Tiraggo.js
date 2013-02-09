@@ -1,7 +1,8 @@
-﻿/*globals tg*/
-/// <reference path="../../Libs/jquery-1.7.1.js" />
-/// <reference path="../../Libs/json2.js" />
-/// <reference path="../../Libs/knockout-2.0.0.debug.js" />
+﻿/*global tg */
+
+//
+//    Copyright (c) Mike Griffin, 2013 
+//
 
 
 tg.TiraggoEntityCollection = function () {
@@ -78,9 +79,9 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
         });
 
 
-        if (addedEntitiorm.length > 0) {
-            for (index = addedEntitiorm.length - 1; index >= 0; index--) {
-                this.tg.deletedEntitiorm.splice(addedEntities[index], 1);
+        if (addedEntities.length > 0) {
+            for (index = addedEntities.length - 1; index >= 0; index = index - 1) {
+                this.tg.deletedEntities.splice(addedEntities[index], 1);
             }
         }
 
@@ -93,13 +94,13 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
                     break;
 
                 case tg.RowState.ADDED:
-                    addedEntitiorm.push(entity);
+                    addedEntities.push(entity);
                     break;
             }
         });
 
-        if (addedEntitiorm.length > 0) {
-            for (i = 0; i < addedEntitiorm.length; i++) {
+        if (addedEntities.length > 0) {
+            for (i = 0; i < addedEntities.length; i = i + 1) {
                 index = ko.utils.arrayIndexOf(self(), addedEntities[i]);
                 if (index >= 0) {
                     self.splice(index, 1);
@@ -146,7 +147,7 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
     // Can be a single entity or an array of entities
     markAsDeleted: function (entitiesOrEntityToDelete) {
 
-        var i, entity, coll, len, arr, tempArr = [], self = this;
+        var i, entity, coll, len, arr, tempArr = [];
 
         if (!arguments) {
             throw new Error("The entitiesOrEntityToDelete cannot be null or undefined.");
@@ -160,7 +161,7 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
                 throw new Error("The array passed in to markAsDeleted.markAsDeleted() cannot be empty.");
             }
         } else {
-            for (i = 0; i < arguments.length; i++) {
+            for (i = 0; i < arguments.length; i = i + 1) {
                 if (tg.isTiraggoEntity(arguments[i])) {
                     tempArr.push(arguments[i]);
                 } else {
@@ -202,8 +203,7 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
             EntityCtor,
             finalColl = [],
             create = this.createEntity,
-            entity,
-            self = this;
+            entity;
 
         if (entityTypeName) {
             EntityCtor = tg.getType(entityTypeName); //might return undefined
@@ -263,7 +263,7 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
 
     //#region Loads
     load: function (options) {
-        var self = this;
+        var self = this, successHandler, errorHandler;
 
         self.tg.isLoading(true);
 
@@ -280,8 +280,8 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
         }
 
         //sprinkle in our own handlers, but make sure the original still gets called
-        var successHandler = options.success, 
-            errorHandler = options.error;
+        successHandler = options.success;
+        errorHandler = options.error;
 
         //wrap the passed in success handler so that we can populate the Entity
         options.success = function (data, options) {
@@ -326,11 +326,11 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
 
     //#region Save
     save: function (success, error, state) {
-        var self = this;
+        var self = this, options, successHandler, errorHandler;
 
         self.tg.isLoading(true);
 
-        var options = { success: success, error: error, state: state, route: self.tgRoutes['commit'] };
+        options = { success: success, error: error, state: state, route: self.tgRoutes['commit'] };
 
         if (arguments.length === 1 && arguments[0] && typeof arguments[0] === 'object') {
             tg.utils.extend(options, arguments[0]);
@@ -342,7 +342,6 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
             options.async = false;
         }
 
-        //TODO: potentially the most inefficient call in the whole lib
         options.data = tg.utils.getDirtyGraph(self);
 
         if (options.data === null) {
@@ -360,8 +359,8 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
             options.type = options.route.method;
         }
 
-        var successHandler = options.success;
-        var errorHandler = options.error;
+        successHandler = options.success;
+        errorHandler = options.error;
 
         options.success = function (data, options) {
             self.tg.deletedEntities([]);

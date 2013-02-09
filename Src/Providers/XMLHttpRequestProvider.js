@@ -1,4 +1,8 @@
-﻿/* File Created: December 23, 2011 */
+﻿/*global tg, alert*/
+
+//
+//    Copyright (c) Mike Griffin, 2013 
+//
 
 tg.XMLHttpRequestProvider = function () {
 
@@ -32,7 +36,7 @@ tg.XMLHttpRequestProvider = function () {
 
         var response;
 
-        if(responseText === "") {
+        if (responseText === "") {
             response = {
                 data: "",
                 error: undefined

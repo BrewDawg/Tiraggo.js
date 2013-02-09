@@ -1,5 +1,9 @@
 /*global tg*/
 
+//
+//    Copyright (c) Mike Griffin, 2013 
+//
+
 tg.PagerFilterCriteria = function () {
     this.column = null;
     this.criteria1 = null;
