@@ -32,8 +32,10 @@ tg.objectKeys = Object.keys || function (obj) {
 
 tg.isTiraggoCollection = function (coll) {
     var isColl = false;
-    if (coll !== undefined && coll.tg !== undefined && coll.tg.___TiraggoCollection___ !== undefined) {
-        isColl = true;
+    if (coll !== undefined && coll.tg !== undefined) {
+		if(coll.tg.___TiraggoCollection___ !== undefined) {
+			isColl = true;
+		}
     } else {
         if (tg.isArray(coll)) {
             if (coll.length > 0) {

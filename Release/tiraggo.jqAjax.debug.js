@@ -2,7 +2,7 @@
 // The Tiraggo.js JavaScript library v0.0.0 
 // Copyright (c) Mike Griffin 
 // 
-// Built on Fri 02/08/2013 at 21:24:57.13    
+// Built on Sat 02/09/2013 at  7:44:10.97    
 // https://github.com/BrewDawg/Tiraggo.js 
 // 
 // License: NOT YET DETERMINED 
@@ -163,8 +163,10 @@ tg.objectKeys = Object.keys || function (obj) {
 
 tg.isTiraggoCollection = function (coll) {
     var isColl = false;
-    if (coll !== undefined && coll.tg !== undefined && coll.tg.___TiraggoCollection___ !== undefined) {
-        isColl = true;
+    if (coll !== undefined && coll.tg !== undefined) {
+		if(coll.tg.___TiraggoCollection___ !== undefined) {
+			isColl = true;
+		}
     } else {
         if (tg.isArray(coll)) {
             if (coll.length > 0) {

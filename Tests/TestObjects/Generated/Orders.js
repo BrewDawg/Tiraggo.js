@@ -31,22 +31,31 @@
         this.tgExtendedData = undefined;
 
         // Hierarchical Properties
+        this.UpToProductsCollection = tg.defineLazyLoader(this, 'UpToProductsCollection');
         this.OrderDetailsCollectionByOrderID = tg.defineLazyLoader(this, 'OrderDetailsCollectionByOrderID');
+        this.UpToCustomersByCustomerID = tg.defineLazyLoader(this, 'UpToCustomersByCustomerID');
         this.UpToEmployeesByEmployeeID = tg.defineLazyLoader(this, 'UpToEmployeesByEmployeeID');
+        this.UpToShippersByShipVia = tg.defineLazyLoader(this, 'UpToShippersByShipVia');
     });
 
     //#region Prototype Level Information
 
     tg.objects.Orders.prototype.tgTypeDefs = {
+        UpToProductsCollection: "ProductsCollection",
         OrderDetailsCollectionByOrderID: "OrderDetailsCollection",
+        UpToCustomersByCustomerID: "Customers",
         UpToEmployeesByEmployeeID: "Employees",
+        UpToShippersByShipVia: "Shippers"
     };
 
     tg.objects.Orders.prototype.tgRoutes = {
         commit: { method: 'PUT', url: 'Orders_Save', response: 'entity' },
         loadByPrimaryKey: { method: 'GET', url: 'Orders_LoadByPrimaryKey', response: 'entity' },
+        UpToProductsCollection: { method: 'GET', url: 'Orders_UpToProductsCollection', response: 'collection' },
         OrderDetailsCollectionByOrderID: { method: 'GET', url: 'Orders_OrderDetailsCollectionByOrderID', response: 'collection' },
-        UpToEmployeesByEmployeeID: { method: 'GET', url: 'Orders_UpToEmployeesByEmployeeID', response: 'entity' }
+        UpToCustomersByCustomerID: { method: 'GET', url: 'Orders_UpToCustomersByCustomerID', response: 'entity' },
+        UpToEmployeesByEmployeeID: { method: 'GET', url: 'Orders_UpToEmployeesByEmployeeID', response: 'entity' },
+        UpToShippersByShipVia: { method: 'GET', url: 'Orders_UpToShippersByShipVia', response: 'entity' }
     };
 
     tg.objects.Orders.prototype.tgColumnMap = {

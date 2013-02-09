@@ -25,6 +25,7 @@
 
 		// Hierarchical Properties
 		this.UpToOrdersByOrderID = tg.defineLazyLoader(this, 'UpToOrdersByOrderID');
+		this.UpToProductsByProductID = tg.defineLazyLoader(this, 'UpToProductsByProductID');
 	});
 
 	//#region Prototype Level Information
@@ -37,7 +38,8 @@
 	tg.objects.OrderDetails.prototype.tgRoutes = {
 		commit: { method: 'PUT', url: 'OrderDetails_Save', response: 'entity' },
 		loadByPrimaryKey: { method: 'GET', url: 'OrderDetails_LoadByPrimaryKey', response: 'entity' },
-		UpToOrdersByOrderID: { method: 'GET', url: 'OrderDetails_UpToOrdersByOrderID', response: 'entity'}
+		UpToOrdersByOrderID: { method: 'GET', url: 'OrderDetails_UpToOrdersByOrderID', response: 'entity'},
+		UpToProductsByProductID: { method: 'GET', url: 'OrderDetails_UpToProductsByProductID', response: 'entity'}
 	};
 
 	tg.objects.OrderDetails.prototype.tgColumnMap = {
