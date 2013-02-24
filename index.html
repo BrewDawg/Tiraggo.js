@@ -36,7 +36,38 @@
 
 <ul>
 <li><a href="http://www.tiraggo.com/tiraggo/wcfservice/Editing.aspx">Run the Live Application</a></li>
-</ul><h2>How the Application was Created</h2>
+</ul><h2>Features</h2>
+
+<ul>
+<li>Built upon Knockout and the MVVM Model</li>
+<li>All class properties are ko.observables and collections classes are ko.observableArrays</li>
+<li>Only 17k minimized</li>
+<li>Supports MS SQL Server, Azure, SQL CE, Oracle, PostgreSQL, MySQL, SQLite</li>
+<li>Supports WCF JSON Service and RESTFUL API's</li>
+<li>Supports Full Hierarchical Data Models</li>
+<li>Hierarchical Model Supports Lazy Loading (See video below)</li>
+<li>All saves take place within transactions, including complex hierarchcial saves</li>
+<li>Two Providers, either pure XHR or JQuery Ajax (you choose which one you want to use)</li>
+<li>Tracks Row Level and Column Level Dirty State</li>
+<li>Tracks Original Values so Edits can be Cancelled via RejectChanges</li>
+<li>Generic - Can be used with any ORM or Database Backend</li>
+</ul><h2>Intuitive API</h2>
+
+<div class="highlight"><pre>    <span class="c1">// Add a single record</span>
+    <span class="kd">var</span> <span class="nx">emp</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">tg</span><span class="p">.</span><span class="nx">objects</span><span class="p">.</span><span class="nx">Employees</span><span class="p">();</span>
+    <span class="nx">emp</span><span class="p">.</span><span class="nx">FirstName</span><span class="p">(</span><span class="s2">"Just"</span><span class="p">);</span>
+    <span class="nx">emp</span><span class="p">.</span><span class="nx">LastName</span><span class="p">(</span><span class="s2">"Added"</span><span class="p">);</span>
+    <span class="nx">emp</span><span class="p">.</span><span class="nx">save</span><span class="p">();</span>
+
+    <span class="c1">// Or the same as above</span>
+    <span class="kd">var</span> <span class="nx">emp</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">tg</span><span class="p">.</span><span class="nx">objects</span><span class="p">.</span><span class="nx">Employees</span><span class="p">({</span>
+        <span class="nx">FirstName</span><span class="o">:</span> <span class="s1">'Just'</span><span class="p">,</span>
+        <span class="nx">LastName</span><span class="o">:</span> <span class="s1">'Added'</span>
+    <span class="p">});</span>
+    <span class="nx">emp</span><span class="p">.</span><span class="nx">Save</span><span class="p">();</span>
+</pre></div>
+
+<h2>How the Application was Created</h2>
 
 <ul>
 <li><a href="http://brewdawg.com/blog/?p=137">The Visual Studio Solution</a></li>
