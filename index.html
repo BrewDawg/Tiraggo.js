@@ -1,42 +1,54 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
-    <meta charset='utf-8'>
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
-
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-
     <title>Tiraggo.js by BrewDawg</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
   </head>
-
   <body>
-    <header>
-      <div class="inner">
-        <h1>Tiraggo.js</h1>
-        <h2>JavaScript ORM to Compliment the Tiraggo Architecture</h2>
-        <a href="https://github.com/BrewDawg/Tiraggo.js" class="button"><small>View project on</small>GitHub</a>
-      </div>
-    </header>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/BrewDawg/Tiraggo.js">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/BrewDawg/Tiraggo.js/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/BrewDawg/Tiraggo.js/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
 
-    <div id="content-wrapper">
-      <div class="inner clearfix">
-        <section id="main-content">
-          <p>Tiraggo.js is built upon Knockout</p>
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Tiraggo.js</h1>
+          <p>JavaScript ORM to Compliment the Tiraggo Architecture</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/BrewDawg">BrewDawg</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        </div>
+
+        <p>Tiraggo.js is built upon Knockout</p>
 
 <p>Copyright © Mike Griffin. All Rights Reserved.</p>
 
-<h2>Live Tiraggo/Tiraggo.js/Knockout Application</h2>
+<h2>
+<a name="live-tiraggotiraggojsknockout-application" class="anchor" href="#live-tiraggotiraggojsknockout-application"><span class="octicon octicon-link"></span></a>Live Tiraggo/Tiraggo.js/Knockout Application</h2>
 
 <ul>
 <li><a href="http://www.tiraggo.com/tiraggo/wcfservice/Editing.aspx">Run the Live Application</a></li>
-</ul><h2>Features</h2>
+</ul><h2>
+<a name="features" class="anchor" href="#features"><span class="octicon octicon-link"></span></a>Features</h2>
 
 <ul>
 <li>Built upon Knockout and the MVVM Model</li>
@@ -51,9 +63,10 @@
 <li>Tracks Row Level and Column Level Dirty State</li>
 <li>Tracks Original Values so Edits can be Cancelled via RejectChanges</li>
 <li>Generic - Can be used with any ORM or Database Backend</li>
-</ul><h2>Intuitive API</h2>
+</ul><h2>
+<a name="intuitive-api" class="anchor" href="#intuitive-api"><span class="octicon octicon-link"></span></a>Intuitive API</h2>
 
-<div class="highlight"><pre>    <span class="c1">// Add a single record</span>
+<div class="highlight highlight-javascript"><pre>    <span class="c1">// Add a single record</span>
     <span class="kd">var</span> <span class="nx">emp</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">tg</span><span class="p">.</span><span class="nx">objects</span><span class="p">.</span><span class="nx">Employees</span><span class="p">();</span>
     <span class="nx">emp</span><span class="p">.</span><span class="nx">FirstName</span><span class="p">(</span><span class="s2">"Just"</span><span class="p">);</span>
     <span class="nx">emp</span><span class="p">.</span><span class="nx">LastName</span><span class="p">(</span><span class="s2">"Added"</span><span class="p">);</span>
@@ -67,7 +80,8 @@
     <span class="nx">emp</span><span class="p">.</span><span class="nx">Save</span><span class="p">();</span>
 </pre></div>
 
-<h2>Real World Usage Examples</h2>
+<h2>
+<a name="real-world-usage-examples" class="anchor" href="#real-world-usage-examples"><span class="octicon octicon-link"></span></a>Real World Usage Examples</h2>
 
 <ul>
 <li><a href="https://github.com/BrewDawg/Tiraggo.js/wiki/Adding-New-Records">Adding and Saving New Records</a></li>
@@ -75,38 +89,26 @@
 <li><a href="https://github.com/BrewDawg/Tiraggo.js/wiki/Loading-and-Saving-Hierarchical-Data">Loading and Saving Hierarchical Data</a></li>
 <li><a href="https://github.com/BrewDawg/Tiraggo.js/wiki/Asychronous-&amp;-Synchronous-methods">Asychronous and or Synchronous methods</a></li>
 <li><a href="https://github.com/BrewDawg/Tiraggo.js/wiki/Passing-in-'state'-to-the-Async-methods">Passing in 'state' to the Async methods</a></li>
-</ul><h2>How the Application was Created</h2>
+</ul><h2>
+<a name="how-the-application-was-created" class="anchor" href="#how-the-application-was-created"><span class="octicon octicon-link"></span></a>How the Application was Created</h2>
 
 <ul>
 <li><a href="http://brewdawg.com/blog/?p=137">The Visual Studio Solution</a></li>
-</ul><h2>Tiraggo's Endless Possibilities</h2>
+</ul><h2>
+<a name="tiraggos-endless-possibilities" class="anchor" href="#tiraggos-endless-possibilities"><span class="octicon octicon-link"></span></a>Tiraggo's Endless Possibilities</h2>
 
 <p><img src="https://raw.github.com/BrewDawg/Tiraggo.js/master/images/Tiraggo_Architecture.png" border="0"></p>
 
-<h2>Tiraggo - The Nomadic Architecture</h2>
+<h2>
+<a name="tiraggo---the-nomadic-architecture" class="anchor" href="#tiraggo---the-nomadic-architecture"><span class="octicon octicon-link"></span></a>Tiraggo - The Nomadic Architecture</h2>
 
 <ul>
 <li><a href="http://brewdawg.github.com/Tiraggo/">The Tiraggo C# Architecture</a></li>
 </ul>
-        </section>
+      </section>
 
-        <aside id="sidebar">
-          <a href="https://github.com/BrewDawg/Tiraggo.js/zipball/master" class="button">
-            <small>Download</small>
-            .zip file
-          </a>
-          <a href="https://github.com/BrewDawg/Tiraggo.js/tarball/master" class="button">
-            <small>Download</small>
-            .tar.gz file
-          </a>
-
-          <p class="repo-owner"><a href="https://github.com/BrewDawg/Tiraggo.js"></a> is maintained by <a href="https://github.com/BrewDawg">BrewDawg</a>.</p>
-
-          <p>This page was generated by <a href="pages.github.com">GitHub Pages</a> using the Architect theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.</p>
-        </aside>
-      </div>
     </div>
-
-  
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
   </body>
 </html>
