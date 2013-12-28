@@ -6,228 +6,256 @@
 
 var utils = {
 
-    dateParser: new tg.DateParser(),
+	dateParser: new tg.DateParser(),
 
-    copyDataIntoEntity: function (target, source) {
-        var prop, srcProp;
+	copyDataIntoEntity: function (target, source, tgColumnMapOnly) {
+		var prop, srcProp;
 
-        if (!target || !source) {
-            return;
-        }
+		if (!target || !source) {
+			return;
+		}
 
-        for (prop in target) {
+		for (prop in target) {
 
-            if (source.hasOwnProperty(prop)) {
+			if (source.hasOwnProperty(prop)) {
 
-                if (target.tgTypeDefs && target.tgTypeDefs[prop]) { continue; } // skip heirarchtical
+				if (target.tgTypeDefs && target.tgTypeDefs[prop]) { continue; } // skip heirarchtical
+				/*
+				if (tgColumnMapOnly === true) {
+					// After Save we execute this logic
+					mappedName = target.tgColumnMap[prop];
+					if (mappedName === undefined) {
+						continue;
+					}
+				}
+				*/
+				srcProp = source[prop];
 
-                srcProp = source[prop];
+				if (typeof srcProp === "string") {
+					srcProp = utils.dateParser.deserialize(srcProp);
+				}
 
-                if (typeof srcProp === "string") {
-                    srcProp = utils.dateParser.deserialize(srcProp);
-                }
+				if (ko.isObservable(target[prop]) || ko.isComputed(target[prop])) { //set the observable property
+					target[prop](srcProp); // set the observable
+				} else {
+					target[prop] = srcProp;
+				}
+			}
+		}
 
-                if (ko.isObservable(target[prop]) || ko.isComputed(target[prop])) { //set the observable property
-                    target[prop](srcProp); // set the observable
-                } else {
-                    target[prop] = srcProp;
-                }
-            }
-        }
+		return target;
+	},
 
-        return target;
-    },
+	extend: function (target, source) {
+		var prop;
 
-    extend: function (target, source) {
-        var prop;
+		if (!target || !source) {
+			return;
+		}
 
-        if (!target || !source) {
-            return;
-        }
+		for (prop in source) {
+			target[prop] = source[prop];
+		}
 
-        for (prop in source) {
-            target[prop] = source[prop];
-        }
+		return target;
+	},
 
-        return target;
-    },
+	addPropertyChangedHandlers: function (obj, propertyName) {
 
-    addPropertyChangedHandlers: function (obj, propertyName) {
+		var property = obj[propertyName];
 
-        var property = obj[propertyName];
+		//only subscribe to property changes if its a ko.observable... not an ObservableArray, or a Computed
+		if (ko.isObservable(property) && !(property instanceof Array) && property.__ko_proto__ !== ko.dependentObservable) {
 
-        //only subscribe to property changes if its a ko.observable... not an ObservableArray, or a Computed
-        if (ko.isObservable(property) && !(property instanceof Array) && property.__ko_proto__ !== ko.dependentObservable) {
+			// This is the actual PropertyChanged event
+			property.subscribe(function (originalValue) {
 
-            // This is the actual PropertyChanged event
-            property.subscribe(function (originalValue) {
+				var mappedName;
 
-                var mappedName;
+				if (obj.tg.ignorePropertyChanged === false) {
 
-                if (obj.tg.ignorePropertyChanged === false) {
+					mappedName = obj.tgColumnMap[propertyName];
 
-                    mappedName = obj.tgColumnMap[propertyName];
+					if (mappedName === 1) {
+						mappedName = propertyName;
+					}
 
-                    if (mappedName === 1) {
-                        mappedName = propertyName;
-                    }
+					mappedName = mappedName || propertyName;
 
-                    mappedName = mappedName || propertyName;
+					if (ko.utils.arrayIndexOf(obj.ModifiedColumns(), mappedName) === -1) {
 
-                    if (ko.utils.arrayIndexOf(obj.ModifiedColumns(), mappedName) === -1) {
+						if (!obj.tg.originalValues[propertyName]) {
+							obj.tg.originalValues[propertyName] = originalValue;
+						}
 
-                        if (!obj.tg.originalValues[propertyName]) {
-                            obj.tg.originalValues[propertyName] = originalValue;
-                        }
+						if (propertyName !== "RowState") {
 
-                        if (propertyName !== "RowState") {
+							obj.ModifiedColumns.push(mappedName);
 
-                            obj.ModifiedColumns.push(mappedName);
+							if (obj.RowState() !== tg.RowState.MODIFIED && obj.RowState() !== tg.RowState.ADDED) {
+								obj.RowState(tg.RowState.MODIFIED);
+							}
+						}
+					}
+				}
+			}, obj, "beforeChange"); //subscribe to 'beforeChange' so we can be notified of the current value and not the new value!
+		}
+	},
 
-                            if (obj.RowState() !== tg.RowState.MODIFIED && obj.RowState() !== tg.RowState.ADDED) {
-                                obj.RowState(tg.RowState.MODIFIED);
-                            }
-                        }
-                    }
-                }
-            }, obj, "beforeChange"); //subscribe to 'beforeChange' so we can be notified of the current value and not the new value!
-        }
-    },
+	startTracking: function (entity) {
 
-    startTracking: function (entity) {
+		var propertyName, property;
 
-        var propertyName, property;
+		if (!entity.hasOwnProperty("RowState")) {
+			entity.RowState = ko.observable(tg.RowState.ADDED);
+		} else {
+			if (!ko.isObservable(entity.RowState)) {
+				entity.RowState = ko.observable(entity.RowState);
+			}
+		}
 
-        if (!entity.hasOwnProperty("RowState")) {
-            entity.RowState = ko.observable(tg.RowState.ADDED);
-        } else {
-            if (!ko.isObservable(entity.RowState)) {
-                entity.RowState = ko.observable(entity.RowState);
-            }
-        }
-
-        if (entity.hasOwnProperty("ModifiedColumns")) {
-            //overwrite existing data
-            entity.ModifiedColumns([]);
-        } else {
-            entity.ModifiedColumns = ko.observableArray();
-        }
+		if (entity.hasOwnProperty("ModifiedColumns")) {
+			//overwrite existing data
+			entity.ModifiedColumns([]);
+		} else {
+			entity.ModifiedColumns = ko.observableArray();
+		}
 
 
-        for (propertyName in entity) {
-            if (propertyName !== "ModifiedColumns" &&
-                propertyName !== '__type' &&
-                propertyName !== 'tgExtendedData' &&
-                propertyName !== 'tg') {
+		for (propertyName in entity) {
+			if (propertyName !== "ModifiedColumns" &&
+				propertyName !== '__type' &&
+				propertyName !== 'tgExtendedData' &&
+				propertyName !== 'tg') {
 
-                property = entity[propertyName];
+				property = entity[propertyName];
 
-                if (property instanceof Array) {
-                    continue;
-                }
+				if (property instanceof Array) {
+					continue;
+				}
 
-                if (entity.hasOwnProperty(propertyName) && ko.isObservable(property)) {
-                    utils.addPropertyChangedHandlers(entity, propertyName);
-                }
-            }
-        }
+				if (entity.hasOwnProperty(propertyName) && ko.isObservable(property)) {
+					utils.addPropertyChangedHandlers(entity, propertyName);
+				}
+			}
+		}
 
-        return entity;
-    },
+		return entity;
+	},
 
-    expandExtraColumns: function (entity, shouldMakeObservable) {
+	expandExtraColumns: function (entity, shouldMakeObservable) {
 
-        var data,
-            i,
-            makeObservable = arguments[1] || false;
+		var data,
+			i,
+			makeObservable = arguments[1] || false;
 
-        if (entity.tgExtendedData && tg.isArray(entity.tgExtendedData)) {
+		if (entity.tgExtendedData && tg.isArray(entity.tgExtendedData)) {
 
-            data = ko.isObservable(entity.tgExtendedData) ? entity.tgExtendedData() : entity.tgExtendedData;
+			data = ko.isObservable(entity.tgExtendedData) ? entity.tgExtendedData() : entity.tgExtendedData;
 
-            for (i = 0; i < data.length; i = i + 1) {
+			for (i = 0; i < data.length; i = i + 1) {
 
-                if (ko.isObservable(entity[data[i].Key])) { //set the observable property
-                    entity[data[i].Key](data[i].Value); // set the observable
-                } else {
-                    if (makeObservable) {
-                        entity[data[i].Key] = ko.observable(data[i].Value);
-                    } else {
-                        entity[data[i].Key] = data[i].Value;
-                    }
-                }
-            }
+				if (data[i].Key === "tgRowId") continue;
 
-            entity.tgExtendedData = [];
-        }
+				if (ko.isObservable(entity[data[i].Key])) { //set the observable property
+					entity[data[i].Key](data[i].Value); // set the observable
+				} else {
+					if (makeObservable) {
+						entity[data[i].Key] = ko.observable(data[i].Value);
+					} else {
+						entity[data[i].Key] = data[i].Value;
+					}
+				}
+			}
 
-        return entity;
-    },
+			entity.tgExtendedData = [];
+		}
 
-    getDirtyGraph: function (obj, root, dirtyGraph) {
+		return entity;
+	},
 
-        var propertyName, entity, arr, temp, index;
+	getDirtyGraph: function (obj, root, dirtyGraph, objId) {
 
-        // Check and see if we have anything dirty at all?
-        if (root === undefined) {
-            if (!obj.isDirtyGraph()) {
-                return null;
-            }
-        }
+		if (objId === undefined) {
+			var id = objId || 0;
+		}
 
-        if (tg.isTiraggoEntity(obj)) {
+		var walkGraph = function (obj, root, dirtyGraph, objId) {
 
-            if (tg.isArray(dirtyGraph)) {
-                temp = obj.prepareForJSON();
-                dirtyGraph.push(temp);
-                dirtyGraph = temp;
-            } else {
-                dirtyGraph = obj.prepareForJSON();
-            }
+			var propertyName, entity, arr, tmp, index;
 
-            if (root === undefined) {
-                root = dirtyGraph;
-            }
+			// Check and see if we have anything dirty at all?
+			if (root === undefined) {
+				if (!obj.isDirtyGraph()) {
+					return null;
+				}
+			}
 
-            for (propertyName in obj.tgTypeDefs) {
+			if (tg.isTiraggoEntity(obj)) {
 
-                if (obj[propertyName] !== undefined) {
+				if (tg.isArray(dirtyGraph)) {
+					tmp = obj.prepareForJSON();
+					dirtyGraph.push(tmp);
+					if (tmp.tgExtendedData === undefined) {
+						tmp.tgExtendedData = [];
+					}
+					if (obj.tgExtendedData === undefined) {
+						obj.tgExtendedData = [];
+					}
+					obj.tgExtendedData.push({ 'Key': 'tgRowId', 'Value': id });
+					tmp.tgExtendedData.push({ 'Key': 'tgRowId', 'Value': id });
+					id = id + 1;
+					dirtyGraph = tmp;
+				} else {
+					dirtyGraph = obj.prepareForJSON();
+				}
 
-                    if (obj[propertyName].isDirtyGraph()) {
+				if (root === undefined) {
+					root = dirtyGraph;
+				}
 
-                        arr = obj[propertyName].prepareForJSON();
-                        dirtyGraph[propertyName] = [];
+				for (propertyName in obj.tgTypeDefs) {
 
-                        for (index = 0; index < arr.length; index = index + 1) {
-                            entity = arr[index];
-                            tg.utils.getDirtyGraph(entity, root, dirtyGraph[propertyName]);
-                        }
-                    }
-                }
-            }
-        } else {
+					if (obj[propertyName] !== undefined) {
 
-            // They passed in a collection 
-            root = [];
+						if (obj[propertyName].isDirtyGraph()) {
 
-            arr = obj.prepareForJSON();
+							arr = obj[propertyName].prepareForJSON();
+							dirtyGraph[propertyName] = [];
 
-            for (index = 0; index < arr.length; index = index + 1) {
-                entity = arr[index];
-                tg.utils.getDirtyGraph(entity, root, root);
-            }
-        }
+							for (index = 0; index < arr.length; index = index + 1) {
+								entity = arr[index];
+								walkGraph(entity, root, dirtyGraph[propertyName], id);
+							}
+						}
+					}
+				}
+			} else {
 
-        return root;
-    }
+				// They passed in a collection 
+				root = [];
+
+				arr = obj.prepareForJSON();
+
+				for (index = 0; index < arr.length; index = index + 1) {
+					entity = arr[index];
+					walkGraph(entity, root, root, id);
+				}
+			}
+
+			return root;
+		};
+
+		return walkGraph(obj, root, dirtyGraph, id);
+	}
 };
 
 utils.newId = (function () {
-    var seedId = new Date().getTime();
+	var seedId = new Date().getTime();
 
-    return function () {
-        return (seedId = seedId + 1);
-    };
+	return function () {
+		return (seedId = seedId + 1);
+	};
 
 } ());
 

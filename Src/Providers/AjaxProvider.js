@@ -6,65 +6,65 @@
 
 //set this up so we match jQuery's api style... if we want to rip it out later, we can...
 tg.AjaxProvider = function () {
-    var noop = function () { };
-    var parameterizeUrl = function (url, data) {
-        var newUrl, rurlDataExpr = /\{([^\}]+)\}/g;
+	var noop = function () { };
+	var parameterizeUrl = function (url, data) {
+		var newUrl, rurlDataExpr = /\{([^\}]+)\}/g;
 
-        if (typeof data === "string") {
-            return;
-        }
+		if (typeof data === "string") {
+			return;
+		}
 
-        //thanks AmplifyJS for this little tidbit
-        // url = "/Product/{id}" => "/Product/57966910-C5EF-400A-8FC4-615159D95C2D
-        newUrl = url.replace(rurlDataExpr, function (m, key) {
-            if (key in data) {
-                return ko.utils.unwrapObservable(data[key]);
-            }
-        });
+		//thanks AmplifyJS for this little tidbit
+		// url = "/Product/{id}" => "/Product/57966910-C5EF-400A-8FC4-615159D95C2D
+		newUrl = url.replace(rurlDataExpr, function (m, key) {
+			if (key in data) {
+				return ko.utils.unwrapObservable(data[key]);
+			}
+		});
 
-        return newUrl;
-    };
+		return newUrl;
+	};
 
 
-    this.execute = function (options) {
-        var origSuccess = options.success || noop,
-            origError = options.error || noop,
-            defaults = {
-                cache: false,
-                contentType: 'application/json; charset=utf-8;',
-                dataType: 'json',
-                type: 'GET'
-            };
+	this.execute = function (options) {
+		var origSuccess = options.success || noop,
+			origError = options.error || noop,
+			defaults = {
+				cache: false,
+				contentType: 'application/json; charset=utf-8;',
+				dataType: 'json',
+				type: 'GET'
+			};
 
-        //extend the defaults with our options
-        options = $.extend(defaults, options);
+		//extend the defaults with our options
+		options = $.extend(defaults, options);
 
-        // override the passed in successHandler so we can add global processing if needed
-        options.success = function (data) {
-            origSuccess(data, options);
-        };
+		// override the passed in successHandler so we can add global processing if needed
+		options.success = function (data) {
+			origSuccess(data, options);
+		};
 
-        // override the passed in errorHandler so we can add global processing if needed
-        options.error = function (xhr, textStatus, errorThrown) {
-            if (origError) {
-                origError(xhr.status, xhr.responseText, options);
-            } else {
-                tg.onError({ code: xhr.status, message: xhr.responseText });
-            }
-        };
+		// override the passed in errorHandler so we can add global processing if needed
+		options.error = function (xhr, textStatus, errorThrown) {
+			if (origError) {
+				origError(xhr.status, xhr.responseText, options);
+			} else {
+				tg.onError({ code: xhr.status, message: xhr.responseText });
+			}
+		};
 
-        // parameterize the Url
-        // url = "/Product/{id}" => "/Product/57966910-C5EF-400A-8FC4-615159D95C2D
-        options.url = parameterizeUrl(options.url, options.data);
+		// parameterize the Url
+		// url = "/Product/{id}" => "/Product/57966910-C5EF-400A-8FC4-615159D95C2D
+		options.url = parameterizeUrl(options.url, options.data);
 
-        // don't json-ize a 'GET's data object bc jQuery $.param will do this automatically
-        if (options.data && options.type !== 'GET') {
-            options.data = ko.toJSON(options.data);
-        }
+		// don't json-ize a 'GET's data object bc jQuery $.param will do this automatically
+		if (options.data && options.type !== 'GET') {
+			options.data = ko.toJSON(options.data);
+		}
 
-        $.ajax(options);
-    };
+		$.ajax(options);
+	};
 };
-    
+	
 
 tg.dataProvider = new tg.AjaxProvider(); //assign default data provider

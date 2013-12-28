@@ -6,67 +6,67 @@
 
 tg.tgLazyLoader = function (entity, propName) {
 
-    var self = entity;
+	var self = entity;
 
-    var tgLazyLoader = function () {
+	var tgLazyLoader = function () {
 
-        var val;
+		var val;
 
-        if (arguments.length === 0) {
+		if (arguments.length === 0) {
 
-            if (val === undefined) {
+			if (val === undefined) {
 
-                val = self.createObjectFromType(self.tgTypeDefs[propName]);
+				val = self.createObjectFromType(self.tgTypeDefs[propName]);
 
-                if (val === undefined) {
-                    throw "Please include the JavaScript class file for the '" + propName + "'";
-                }
+				if (val === undefined) {
+					throw "Please include the JavaScript class file for the '" + propName + "'";
+				}
 
-                val.load({
-                    route: self.tgRoutes[propName],
-                    data: self.tgPrimaryKeys()
-                });
-            }
+				val.load({
+					route: self.tgRoutes[propName],
+					data: self.tgPrimaryKeys()
+				});
+			}
 
-            self[propName] = val;
+			self[propName] = val;
 
-            if (self.tgRoutes[propName].response === 'collection') {
-                return val();
-            } else {
-                return val;
-            }
-        }
-    };
+			if (self.tgRoutes[propName].response === 'collection') {
+				return val();
+			} else {
+				return val;
+			}
+		}
+	};
 
-    return tgLazyLoader;
+	return tgLazyLoader;
 };
 
 tg.tgLazyLoader.fn = { //can't do prototype on this one bc its a function
 
-    __ko_proto__: ko.observable,
+	__ko_proto__: ko.observable,
 
-    isDirty: function () {
-        return false;
-    },
+	isDirty: function () {
+		return false;
+	},
 
-    isDirtyGraph: function () {
-        return false;
-    },
+	isDirtyGraph: function () {
+		return false;
+	},
 
-    subscribe: function () {
+	subscribe: function () {
 
-    }
+	}
 };
 
 tg.defineLazyLoader = function (entity, propName) {
 
-    var tgWhatever = function () {
-        var lazy = new tg.tgLazyLoader(entity, propName);
-        return lazy();
-    };
+	var tgWhatever = function () {
+		var lazy = new tg.tgLazyLoader(entity, propName);
+		return lazy();
+	};
 
-    ko.utils.extend(tgWhatever, tg.tgLazyLoader.fn);
-    tgWhatever.tg = {};
-    tgWhatever.tg.___TiraggoLazyLoader___ = true;
-    return tgWhatever;
+	ko.utils.extend(tgWhatever, tg.tgLazyLoader.fn);
+	tgWhatever.tg = {};
+	tgWhatever.tg.___TiraggoLazyLoader___ = true;
+	return tgWhatever;
 };
