@@ -23,13 +23,13 @@ DEL %OutPutFile%
 
 @REM Wrap the final output in an IIFE
 @ECHO //-------------------------------------------------------------------- >> %OutPutFile%
-@ECHO // The Tiraggo.js JavaScript library v1.0.0 >> %OutPutFile%
-@ECHO // Copyright (c) Mike Griffin >> %OutPutFile%
+@ECHO // The Tiraggo.js JavaScript library v1.1.0 >> %OutPutFile%
+@ECHO // Copyright 2013 (c) Mike Griffin >> %OutPutFile%
 @ECHO // >> %OutPutFile%
 @ECHO // Built on %Date% at %Time% >> %OutPutFile%  
 @ECHO // https://github.com/BrewDawg/Tiraggo.js >> %OutPutFile%
 @ECHO // >> %OutPutFile%
-@ECHO // License: NOT YET DETERMINED >> %OutPutFile%
+@ECHO // License: MIT >> %OutPutFile%
 @ECHO //-------------------------------------------------------------------- >> %OutPutFile%
 @ECHO. >>%OutPutFile%
 @ECHO (function(window) { >> %OutPutFile%
@@ -65,13 +65,13 @@ DEL %OutPutFile%
 
 @REM Wrap the final output in an IIFE
 @ECHO //-------------------------------------------------------------------- >> %OutPutFile%
-@ECHO // The Tiraggo.js JavaScript library v1.0.0 >> %OutPutFile%
-@ECHO // Copyright (c) Mike Griffin >> %OutPutFile%
+@ECHO // The Tiraggo.js JavaScript library v1.1.0 >> %OutPutFile%
+@ECHO // Copyright 2013 (c) Mike Griffin >> %OutPutFile%
 @ECHO // >> %OutPutFile%
 @ECHO // Built on %Date% at %Time% >> %OutPutFile%  
 @ECHO // https://github.com/BrewDawg/Tiraggo.js >> %OutPutFile%
 @ECHO // >> %OutPutFile%
-@ECHO // License: NOT YET DETERMINED >> %OutPutFile%
+@ECHO // License: MIT >> %OutPutFile%
 @ECHO //-------------------------------------------------------------------- >> %OutPutFile%
 @ECHO. >>%OutPutFile%
 @ECHO (function(window) { >> %OutPutFile%
