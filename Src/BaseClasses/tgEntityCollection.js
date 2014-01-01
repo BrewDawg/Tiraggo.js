@@ -228,25 +228,31 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
 	//call this when walking the returned server data to populate collection
 	mergeCollection: function (dataArray) {
 
-		var self = this;
+	    var i, j, data, thisArray, self = this;
 
-		if (dataArray && tg.isArray(dataArray)) {
+	    if (dataArray && tg.isArray(dataArray)) {
 
-			ko.utils.arrayForEach(dataArray, function (data) {
+	        for (i = 0; i < dataArray.length; i = i + 1) {
 
-				ko.utils.arrayFirst(self(), function (item) {
+	            data = dataArray[i];
 
-					if (item.tgExtendedData !== undefined && item.tgExtendedData.length > 0) {
+	            thisArray = self();
+	            for (j = 0; j < thisArray.length; j = j + 1) {
 
-						if ((data.tgExtendedData[0].Key === 'tgRowId' && item.tgExtendedData[0].Key === 'tgRowId') &&
+	                item = thisArray[j];
+
+	                if (item.tgExtendedData !== undefined && item.tgExtendedData.length > 0) {
+
+	                    if ((data.tgExtendedData[0].Key === 'tgRowId' && item.tgExtendedData[0].Key === 'tgRowId') &&
 						   (data.tgExtendedData[0].Value === item.tgExtendedData[0].Value)) {
 
-							item.mergeEntity(data);
-						}
-					}
-				});
-			});
-		}
+	                        item.mergeEntity(data);
+	                        break;
+	                    }
+	                }
+	            }
+	        }
+	    }
 	},
 
 	createEntity: function (entityData, Ctor) {
