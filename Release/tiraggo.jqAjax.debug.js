@@ -2,7 +2,7 @@
 // The Tiraggo.js JavaScript library v1.1.0 
 // Copyright 2013 (c) Mike Griffin 
 // 
-// Built on Wed 01/01/2014 at 18:03:11.01   
+// Built on Thu 01/02/2014 at  8:37:57.35   
 // https://github.com/BrewDawg/Tiraggo.js 
 // 
 // License: MIT 
@@ -1269,7 +1269,7 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
 	//call this when walking the returned server data to populate collection
 	mergeCollection: function (dataArray) {
 
-	    var i, j, data, thisArray, self = this;
+	    var i, data, thisArray, self = this;
 
 	    if (dataArray && tg.isArray(dataArray)) {
 
@@ -1277,20 +1277,21 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
 
 	            data = dataArray[i];
 
-	            thisArray = self();
-	            for (j = 0; j < thisArray.length; j = j + 1) {
-
-	                item = thisArray[j];
+	            var match = ko.utils.arrayFirst(self(), function (item) {
 
 	                if (item.tgExtendedData !== undefined && item.tgExtendedData.length > 0) {
 
 	                    if ((data.tgExtendedData[0].Key === 'tgRowId' && item.tgExtendedData[0].Key === 'tgRowId') &&
 						   (data.tgExtendedData[0].Value === item.tgExtendedData[0].Value)) {
 
-	                        item.mergeEntity(data);
-	                        break;
+	                        return item; item.mergeEntity(data);
 	                    }
 	                }
+	            });
+
+	            if (match !== undefined) {
+
+	                match.mergeEntity(data);
 	            }
 	        }
 	    }
