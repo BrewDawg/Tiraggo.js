@@ -334,7 +334,7 @@ tg.TiraggoEntity = function () { //empty constructor
 
 		self.tg.isLoading(true);
 
-		options = { success: success, error: error, state: state, route: self.tgRoutes['commit'] };
+		options = { success: success, error: error, state: state, route: self.tgRoutes['save'] };
 
 		switch (self.RowState()) {
 			case tg.RowState.ADDED:

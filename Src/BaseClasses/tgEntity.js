@@ -280,7 +280,7 @@ tg.TiraggoEntity = function () { //empty constructor
 	//#region Loads
 	this.load = function (options) {
 		var state = {},
-			self = this;
+			self = this, successHandler, errorHandler;
 
 		self.tg.isLoading(true);
 
@@ -300,8 +300,8 @@ tg.TiraggoEntity = function () { //empty constructor
 		}
 
 		//sprinkle in our own handlers, but make sure the original still gets called
-		var successHandler = options.success;
-		var errorHandler = options.error;
+		successHandler = options.success;
+		errorHandler = options.error;
 
 		//wrap the passed in success handler so that we can populate the Entity
 		options.success = function (data, options) {
@@ -315,12 +315,12 @@ tg.TiraggoEntity = function () { //empty constructor
 			}
 
 			//fire the passed in success handler
-			if (successHandler) { successHandler.call(self, data, state); }
+			if (successHandler) { successHandler.call(self, data, options.state); }
 			self.tg.isLoading(false);
 		};
 
 		options.error = function (status, responseText, options) {
-			if (errorHandler) { errorHandler.call(self, status, responseText, state); }
+		    if (errorHandler) { errorHandler.call(self, status, responseText, options.state); }
 			self.tg.isLoading(false);
 		};
 
@@ -358,7 +358,7 @@ tg.TiraggoEntity = function () { //empty constructor
 
 		self.tg.isLoading(true);
 
-		var options = { success: success, error: error, state: state, route: self.tgRoutes['commit'] };
+		var options = { success: success, error: error, state: state, route: self.tgRoutes['save'] };
 
 		switch (self.RowState()) {
 			case tg.RowState.ADDED:
@@ -404,7 +404,7 @@ tg.TiraggoEntity = function () { //empty constructor
 			errorHandler = options.error;
 
 		options.success = function (data, options) {
-			self.populateEntity(data);
+			self.mergeEntity(data);
 			if (successHandler) { successHandler.call(self, data, options.state); }
 			self.tg.isLoading(false);
 		};

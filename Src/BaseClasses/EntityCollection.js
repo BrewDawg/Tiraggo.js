@@ -330,7 +330,7 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
 
 		self.tg.isLoading(true);
 
-		options = { success: success, error: error, state: state, route: self.tgRoutes['commit'] };
+		options = { success: success, error: error, state: state, route: self.tgRoutes['save'] };
 
 		if (arguments.length === 1 && arguments[0] && typeof arguments[0] === 'object') {
 			tg.utils.extend(options, arguments[0]);

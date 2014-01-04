@@ -1,8 +1,8 @@
 //-------------------------------------------------------------------- 
-// The Tiraggo.js JavaScript library v1.2.0 
+// The Tiraggo.js JavaScript library v2.0.0 
 // Copyright 2013, 2014 (c) Mike Griffin 
 // 
-// Built on Thu 01/02/2014 at  8:47:54.29   
+// Built on Sat 01/04/2014 at 14:02:22.23   
 // https://github.com/BrewDawg/Tiraggo.js 
 // 
 // License: MIT 
@@ -884,7 +884,7 @@ tg.TiraggoEntity = function () { //empty constructor
 	//#region Loads
 	this.load = function (options) {
 		var state = {},
-			self = this;
+			self = this, successHandler, errorHandler;
 
 		self.tg.isLoading(true);
 
@@ -904,8 +904,8 @@ tg.TiraggoEntity = function () { //empty constructor
 		}
 
 		//sprinkle in our own handlers, but make sure the original still gets called
-		var successHandler = options.success;
-		var errorHandler = options.error;
+		successHandler = options.success;
+		errorHandler = options.error;
 
 		//wrap the passed in success handler so that we can populate the Entity
 		options.success = function (data, options) {
@@ -919,12 +919,12 @@ tg.TiraggoEntity = function () { //empty constructor
 			}
 
 			//fire the passed in success handler
-			if (successHandler) { successHandler.call(self, data, state); }
+			if (successHandler) { successHandler.call(self, data, options.state); }
 			self.tg.isLoading(false);
 		};
 
 		options.error = function (status, responseText, options) {
-			if (errorHandler) { errorHandler.call(self, status, responseText, state); }
+		    if (errorHandler) { errorHandler.call(self, status, responseText, options.state); }
 			self.tg.isLoading(false);
 		};
 
@@ -962,7 +962,7 @@ tg.TiraggoEntity = function () { //empty constructor
 
 		self.tg.isLoading(true);
 
-		var options = { success: success, error: error, state: state, route: self.tgRoutes['commit'] };
+		var options = { success: success, error: error, state: state, route: self.tgRoutes['save'] };
 
 		switch (self.RowState()) {
 			case tg.RowState.ADDED:
@@ -1008,7 +1008,7 @@ tg.TiraggoEntity = function () { //empty constructor
 			errorHandler = options.error;
 
 		options.success = function (data, options) {
-			self.populateEntity(data);
+			self.mergeEntity(data);
 			if (successHandler) { successHandler.call(self, data, options.state); }
 			self.tg.isLoading(false);
 		};
@@ -1269,32 +1269,32 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
 	//call this when walking the returned server data to populate collection
 	mergeCollection: function (dataArray) {
 
-	    var i, data, thisArray, self = this;
+		var i, data, thisArray, self = this;
 
-	    if (dataArray && tg.isArray(dataArray)) {
+		if (dataArray && tg.isArray(dataArray)) {
 
-	        for (i = 0; i < dataArray.length; i = i + 1) {
+			for (i = 0; i < dataArray.length; i = i + 1) {
 
-	            data = dataArray[i];
+				data = dataArray[i];
 
-	            var match = ko.utils.arrayFirst(self(), function (item) {
+				var match = ko.utils.arrayFirst(self(), function (item) {
 
-	                if (item.tgExtendedData !== undefined && item.tgExtendedData.length > 0) {
+					if (item.tgExtendedData !== undefined && item.tgExtendedData.length > 0) {
 
-	                    if ((data.tgExtendedData[0].Key === 'tgRowId' && item.tgExtendedData[0].Key === 'tgRowId') &&
+						if ((data.tgExtendedData[0].Key === 'tgRowId' && item.tgExtendedData[0].Key === 'tgRowId') &&
 						   (data.tgExtendedData[0].Value === item.tgExtendedData[0].Value)) {
 
-	                        return item; item.mergeEntity(data);
-	                    }
-	                }
-	            });
+							return item; item.mergeEntity(data);
+						}
+					}
+				});
 
-	            if (match !== undefined) {
+				if (match !== undefined) {
 
-	                match.mergeEntity(data);
-	            }
-	        }
-	    }
+					match.mergeEntity(data);
+				}
+			}
+		}
 	},
 
 	createEntity: function (entityData, Ctor) {
@@ -1334,9 +1334,13 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
 
 	//#region Loads
 	load: function (options) {
-		var self = this, successHandler, errorHandler;
+		var state = {},
+			self = this, successHandler, errorHandler;
 
 		self.tg.isLoading(true);
+
+		state.wasLoaded = false;
+		state.state = options.state;
 
 		if (options.success !== undefined || options.error !== undefined) {
 			options.async = true;
@@ -1357,8 +1361,13 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
 		//wrap the passed in success handler so that we can populate the Entity
 		options.success = function (data, options) {
 
-			//populate the entity with the returned data;
-			self.populateCollection(data);
+			if (data !== undefined && data !== null) {
+
+				state.wasLoaded = true;
+
+				//populate the entity with the returned data;
+				self.populateCollection(data);
+			}
 
 			//fire the passed in success handler
 			if (successHandler) { successHandler.call(self, data, options.state); }
@@ -1366,7 +1375,7 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
 		};
 
 		options.error = function (status, responseText, options) {
-			if (errorHandler) { errorHandler.call(self, status, responseText, options.state); }
+		    if (errorHandler) { errorHandler.call(self, status, responseText, options.state); }
 			self.tg.isLoading(false);
 		};
 
@@ -1375,6 +1384,8 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
 		if (options.async === false) {
 			self.tg.isLoading(false);
 		}
+
+		return state.wasLoaded;
 	},
 
 	loadAll: function (success, error, state) {
@@ -1391,7 +1402,7 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
 			options.state = state;
 		}
 
-		this.load(options);
+		return this.load(options);
 	},
 	//#endregion Loads
 
@@ -1401,7 +1412,7 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
 
 		self.tg.isLoading(true);
 
-		options = { success: success, error: error, state: state, route: self.tgRoutes['commit'] };
+		options = { success: success, error: error, state: state, route: self.tgRoutes['save'] };
 
 		if (arguments.length === 1 && arguments[0] && typeof arguments[0] === 'object') {
 			tg.utils.extend(options, arguments[0]);
