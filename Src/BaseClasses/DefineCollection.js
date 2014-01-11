@@ -1,4 +1,4 @@
-﻿/*global tg */
+﻿/*global tg */ 
 
 // Copyright (c) Mike Griffin 2013, 2014 
 
