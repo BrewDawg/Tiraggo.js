@@ -2,7 +2,7 @@
 // The Tiraggo.js JavaScript library v2.1.0 
 // Copyright 2013, 2014 (c) Mike Griffin 
 // 
-// Built on Sat 01/11/2014 at 10:47:30.10   
+// Built on Sat 01/11/2014 at 18:48:53.81   
 // https://github.com/BrewDawg/Tiraggo.js 
 // 
 // License: MIT 
@@ -498,7 +498,7 @@ tg.exportSymbol('tg.getDirtyGraph', tg.getDirtyGraph);
 
 // Copyright (c) Mike Griffin 2013, 2014 
 
-tg.tgPagerFilterCriteria = function () {
+tg.PagerFilterCriteria = function () {
 	this.column = null;
 	this.criteria1 = null;
 	this.criteria2 = null;
@@ -506,12 +506,12 @@ tg.tgPagerFilterCriteria = function () {
 	this.conjuction = "AND";
 };
 
-tg.tgPagerSortCriteria = function () {
+tg.PagerSortCriteria = function () {
 	this.column = null;
 	this.direction = "ASC";
 };
 
-tg.tgPagerRequest = function () {
+tg.PagerRequest = function () {
 	this.getTotalRows = true;
 	this.totalRows = 0;
 	this.pageSize = 20;
@@ -1091,12 +1091,13 @@ tg.exportSymbol('tg.TiraggoEntity.mergeEntity', tg.TiraggoEntity.mergeEntity);
 
 // Copyright (c) Mike Griffin 2013, 2014 
 
-tg.TiraggoEntityCollection = function () {
+tg.TiraggoEntityCollection = function (createOptions) {
 	var obs = ko.observableArray([]);
 
 	//define the 'tg' utility object
 	obs.tg = {};
 	obs.tg.___TiraggoCollection___ = true;
+	obs.tg.createOptions = createOptions;
 
 	//add all of our extra methods to the array
 	ko.utils.extend(obs, tg.TiraggoEntityCollection.fn);
@@ -1285,7 +1286,9 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
 
 	//call this when walking the returned server data to populate collection
 	populateCollection: function (dataArray) {
-		var entityTypeName = this.tg.entityTypeName, // this should be set in the 'DefineCollection' call, unless it was an anonymous definition
+
+	    var self = this,
+            entityTypeName = this.tg.entityTypeName, // this should be set in the 'DefineCollection' call, unless it was an anonymous definition
 			EntityCtor,
 			finalColl = [],
 			create = this.createEntity,
@@ -1300,7 +1303,7 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
 			ko.utils.arrayForEach(dataArray, function (data) {
 
 				//call 'createEntity' for each item in the data array
-				entity = create(data, EntityCtor); //ok to pass an undefined Ctor
+			    entity = create(data, EntityCtor, self.tg.createOptions); //ok to pass an undefined Ctor
 
 				if (entity !== undefined && entity !== null) { //could be zeros or empty strings legitimately
 					finalColl.push(entity);
@@ -1344,7 +1347,7 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
 		}
 	},
 
-	createEntity: function (entityData, Ctor) {
+	createEntity: function (entityData, Ctor, createOptions) {
 		var entityTypeName, // this should be set in the 'DefineCollection' call 
 			EntityCtor = Ctor,
 			entity;
@@ -1355,7 +1358,7 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
 		}
 
 		if (EntityCtor) { //if we have a constructor, new it up
-			entity = new EntityCtor();
+		    entity = new EntityCtor(createOptions);
 			entity.populateEntity(entityData);
 		} else { //else just set the entity to the passed in data
 			entity = entityData;
@@ -1567,19 +1570,14 @@ tg.exportSymbol('tg.defineEntity', tg.defineEntity);
 tg.defineCollection = function (typeName, entityName) {
 	var isAnonymous = (typeof (typeName) !== 'string'), tgCollCtor, ctorName = isAnonymous ? arguments[0] : arguments[1];
 
-	tgCollCtor = function (data) {
+	tgCollCtor = function (createOptions) {
 
-		var coll = new tg.TiraggoEntityCollection();
+	    var coll = new tg.TiraggoEntityCollection(createOptions);
 
 		//add the type definition;
 		coll.tg.entityTypeName = ctorName;
 
 		this.init.call(coll); //Trickery and sorcery on the prototype
-
-		// make sure that if we were handed a JSON array, that we initialize the collection with it
-		if (data) {
-			coll.populateCollection(data);
-		}
 
 		return coll;
 	};

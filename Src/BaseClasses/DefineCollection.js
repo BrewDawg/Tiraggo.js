@@ -5,19 +5,14 @@
 tg.defineCollection = function (typeName, entityName) {
 	var isAnonymous = (typeof (typeName) !== 'string'), tgCollCtor, ctorName = isAnonymous ? arguments[0] : arguments[1];
 
-	tgCollCtor = function (data) {
+	tgCollCtor = function (createOptions) {
 
-		var coll = new tg.TiraggoEntityCollection();
+	    var coll = new tg.TiraggoEntityCollection(createOptions);
 
 		//add the type definition;
 		coll.tg.entityTypeName = ctorName;
 
 		this.init.call(coll); //Trickery and sorcery on the prototype
-
-		// make sure that if we were handed a JSON array, that we initialize the collection with it
-		if (data) {
-			coll.populateCollection(data);
-		}
 
 		return coll;
 	};
