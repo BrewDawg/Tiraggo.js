@@ -50,7 +50,7 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
 
 		ko.utils.arrayForEach(this(), function (entity) {
 			if (entity.RowState() !== tg.RowState.UNCHANGED) {
-				entity.acceptChanges();
+			    tg.TiraggoEntity.acceptChanges(entity);
 			}
 		});
 
@@ -241,14 +241,15 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
 						if ((data.tgExtendedData[0].Key === 'tgRowId' && item.tgExtendedData[0].Key === 'tgRowId') &&
 						   (data.tgExtendedData[0].Value === item.tgExtendedData[0].Value)) {
 
-							return item; item.mergeEntity(data);
+						    tg.TiraggoEntity._mergeEntity(item, data);
+						    return item;
 						}
 					}
 				});
 
 				if (match !== undefined) {
 
-					match.mergeEntity(data);
+				    tg.TiraggoEntity._mergeEntity(match, data);
 				}
 			}
 		}
