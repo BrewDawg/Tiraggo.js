@@ -2,7 +2,7 @@
 // The Tiraggo.js JavaScript library v2.0.0 
 // Copyright 2013, 2014 (c) Mike Griffin 
 // 
-// Built on Sat 01/04/2014 at 14:02:22.23   
+// Built on Sat 01/11/2014 at  6:49:24.15   
 // https://github.com/BrewDawg/Tiraggo.js 
 // 
 // License: MIT 
@@ -16,9 +16,7 @@
 ***********************************************/ 
 ﻿/*global window*/
 
-//
-//    Copyright (c) Mike Griffin, 2013 
-//
+// Copyright (c) Mike Griffin 2013, 2014 
 
 var tg = window['tg'] = {}; //define root namespace
 
@@ -50,7 +48,7 @@ var extend = function (target, source) {
 
 config = extend(config, {
 	//defines the namespace where the Business Objects will be stored
-	namespace: 'tg.objects'
+	namespace: 'tg'
 });
 
 //ensure the namespace is built out...
@@ -81,9 +79,7 @@ tg.exportSymbol('tg', tg);
 ***********************************************/ 
 ﻿/*global tg*/
 
-//
-//    Copyright (c) Mike Griffin, 2013 
-//
+// Copyright (c) Mike Griffin 2013, 2014 
 
 tg.RowState = {
 	INVALID: 0,
@@ -101,11 +97,9 @@ tg.exportSymbol('tg.RowState', tg.RowState);
 ***********************************************/ 
 ﻿/*global tg*/
 
-//
-//    Copyright (c) Mike Griffin, 2013 
-//
+// Copyright (c) Mike Griffin 2013, 2014 
 
-tg.DateParser = function () {
+tg.tgDateParser = function () {
 
 	// From the Server
 	this.deserialize = function (date) {
@@ -146,9 +140,7 @@ tg.DateParser = function () {
 ***********************************************/ 
 ﻿/*global tg*/
 
-//
-//    Copyright (c) Mike Griffin, 2013 
-//
+// Copyright (c) Mike Griffin 2013, 2014 
 
 //#region TypeCache Methods
 tg.getType = function (typeName) {
@@ -223,13 +215,11 @@ tg.exportSymbol('tg.isTiraggoCollection', tg.isTiraggoCollection);
 ***********************************************/ 
 ﻿/*global tg, ko*/
 
-//
-//    Copyright (c) Mike Griffin, 2013 
-//
+// Copyright (c) Mike Griffin 2013, 2014 
 
-var utils = {
+var tgUtils = {
 
-	dateParser: new tg.DateParser(),
+	dateParser: new tg.tgDateParser(),
 
 	copyDataIntoEntity: function (target, source, tgColumnMapOnly) {
 		var prop, srcProp;
@@ -255,7 +245,7 @@ var utils = {
 				srcProp = source[prop];
 
 				if (typeof srcProp === "string") {
-					srcProp = utils.dateParser.deserialize(srcProp);
+					srcProp = tgUtils.dateParser.deserialize(srcProp);
 				}
 
 				if (ko.isObservable(target[prop]) || ko.isComputed(target[prop])) { //set the observable property
@@ -267,6 +257,27 @@ var utils = {
 		}
 
 		return target;
+	},
+
+	observable: function (value) {
+	    var self = this;
+	    var _prop = value;
+
+	    // self.__ko_proto__ = '';
+
+	    function observableValue() {
+
+	        // self.__ko_proto__ = '';
+
+	        if (arguments.length > 0) {
+	            _prop = arguments[0];
+	            return this;
+	        } else {
+	            return _prop;
+	        }
+	    }
+
+	    return observableValue;
 	},
 
 	extend: function (target, source) {
@@ -358,7 +369,7 @@ var utils = {
 				}
 
 				if (entity.hasOwnProperty(propertyName) && ko.isObservable(property)) {
-					utils.addPropertyChangedHandlers(entity, propertyName);
+					tgUtils.addPropertyChangedHandlers(entity, propertyName);
 				}
 			}
 		}
@@ -473,16 +484,7 @@ var utils = {
 	}
 };
 
-utils.newId = (function () {
-	var seedId = new Date().getTime();
-
-	return function () {
-		return (seedId = seedId + 1);
-	};
-
-} ());
-
-tg.utils = utils;
+tg.tgUtils = tgUtils;
 
 tg.exportSymbol('tg.extend', tg.extend);
 tg.exportSymbol('tg.startTracking', tg.startTracking);
@@ -494,11 +496,9 @@ tg.exportSymbol('tg.getDirtyGraph', tg.getDirtyGraph);
 ***********************************************/ 
 /*global tg*/
 
-//
-//    Copyright (c) Mike Griffin, 2013 
-//
+// Copyright (c) Mike Griffin 2013, 2014 
 
-tg.PagerFilterCriteria = function () {
+tg.tgPagerFilterCriteria = function () {
 	this.column = null;
 	this.criteria1 = null;
 	this.criteria2 = null;
@@ -506,12 +506,12 @@ tg.PagerFilterCriteria = function () {
 	this.conjuction = "AND";
 };
 
-tg.PagerSortCriteria = function () {
+tg.tgPagerSortCriteria = function () {
 	this.column = null;
 	this.direction = "ASC";
 };
 
-tg.PagerRequest = function () {
+tg.tgPagerRequest = function () {
 	this.getTotalRows = true;
 	this.totalRows = 0;
 	this.pageSize = 20;
@@ -527,9 +527,7 @@ tg.PagerRequest = function () {
 ***********************************************/ 
 ﻿/*global tg */
 
-//
-//    Copyright (c) Mike Griffin, 2013 
-//
+// Copyright (c) Mike Griffin 2013, 2014 
 
 tg.tgLazyLoader = function (entity, propName) {
 
@@ -604,9 +602,7 @@ tg.defineLazyLoader = function (entity, propName) {
 ***********************************************/ 
 ﻿/*global tg, utils */
 
-//
-//    Copyright (c) Mike Griffin, 2013 
-//
+// Copyright (c) Mike Griffin 2013, 2014 
 
 tg.TiraggoEntity = function () { //empty constructor
 	var extenders = [];
@@ -619,14 +615,15 @@ tg.TiraggoEntity = function () { //empty constructor
 	this.init = function () {
 		var self = this;
 
-		//build out the 'es' utility object
-		self.tg.___TiraggoEntity___ = tg.utils.newId(); // assign a unique id so we can test objects with this key, do equality comparison, etc...
+	    //build out the 'es' utility object
+
+		self.tg.___TiraggoEntity___ = true;
 		self.tg.ignorePropertyChanged = false;
 		self.tg.originalValues = {};
 		self.tg.isLoading = ko.observable(false);
 
 		//start change tracking
-		tg.utils.startTracking(self);
+		tg.tgUtils.startTracking(self);
 
 		// before populating the data, call each extender to add the required functionality to our object        
 		ko.utils.arrayForEach(extenders, function (extender) {
@@ -726,7 +723,7 @@ tg.TiraggoEntity = function () { //empty constructor
 
 							// This is a core column ...
 							if (srcValue !== null && srcValue instanceof Date) {
-								stripped[key] = utils.dateParser.serialize(srcValue);
+								stripped[key] = tgUtils.dateParser.serialize(srcValue);
 							} else {
 								stripped[key] = srcValue;
 							}
@@ -773,10 +770,10 @@ tg.TiraggoEntity = function () { //empty constructor
 			this.tg.originalValues = {};
 
 			//populate the entity with data back from the server...
-			tg.utils.copyDataIntoEntity(self, data, false);
+			tg.tgUtils.copyDataIntoEntity(self, data, false);
 
 			//expand the Extra Columns
-			tg.utils.expandExtraColumns(self, true);
+			tg.tgUtils.expandExtraColumns(self, true);
 
 			for (prop in data) {
 				if (data.hasOwnProperty(prop)) {
@@ -820,7 +817,7 @@ tg.TiraggoEntity = function () { //empty constructor
 	};
 
 	this.mergeEntity = function (data) {
-		tg.utils.copyDataIntoEntity(this, data, true);
+		tg.tgUtils.copyDataIntoEntity(this, data, true);
 		this.ModifiedColumns([]);
 		this.RowState(tg.RowState.UNCHANGED);
 		this.tgExtendedData = [];
@@ -944,7 +941,7 @@ tg.TiraggoEntity = function () { //empty constructor
 		};
 
 		if (arguments.length === 1 && arguments[0] && typeof arguments[0] === 'object') {
-			tg.utils.extend(options, arguments[0]);
+			tg.tgUtils.extend(options, arguments[0]);
 		} else {
 			options.data = primaryKey;
 			options.success = success;
@@ -977,7 +974,7 @@ tg.TiraggoEntity = function () { //empty constructor
 		}
 
 		if (arguments.length === 1 && arguments[0] && typeof arguments[0] === 'object') {
-			tg.utils.extend(options, arguments[0]);
+			tg.tgUtils.extend(options, arguments[0]);
 		}
 
 		if (options.success !== undefined || options.error !== undefined) {
@@ -987,7 +984,7 @@ tg.TiraggoEntity = function () { //empty constructor
 		}
 
 		// Get all of the dirty data in the entire object graph
-		options.data = tg.utils.getDirtyGraph(self);
+		options.data = tg.tgUtils.getDirtyGraph(self);
 
 		if (options.data === null) {
 			// there was no data to save
@@ -1041,20 +1038,18 @@ tg.exportSymbol('tg.TiraggoEntity.save', tg.TiraggoEntity.save);
 ***********************************************/ 
 ﻿/*global tg*/
 
-//
-//    Copyright (c) Mike Griffin, 2013 
-//
+// Copyright (c) Mike Griffin 2013, 2014 
 
 tg.TiraggoEntityCollection = function () {
 	var obs = ko.observableArray([]);
 
 	//define the 'tg' utility object
 	obs.tg = {};
+	obs.tg.___TiraggoCollection___ = true;
 
 	//add all of our extra methods to the array
 	ko.utils.extend(obs, tg.TiraggoEntityCollection.fn);
 
-	obs.tg['___TiraggoCollection___'] = tg.utils.newId(); // assign a unique id so we can test objects with this key, do equality comparison, etc...
 	obs.tg.deletedEntities = new ko.observableArray();
 	obs.tg.deletedEntities([]);
 	obs.tg.isLoading = ko.observable(false);
@@ -1395,7 +1390,7 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
 		};
 
 		if (arguments.length === 1 && arguments[0] && typeof arguments[0] === 'object') {
-			tg.utils.extend(options, arguments[0]);
+			tg.tgUtils.extend(options, arguments[0]);
 		} else {
 			options.success = success;
 			options.error = error;
@@ -1415,7 +1410,7 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
 		options = { success: success, error: error, state: state, route: self.tgRoutes['save'] };
 
 		if (arguments.length === 1 && arguments[0] && typeof arguments[0] === 'object') {
-			tg.utils.extend(options, arguments[0]);
+			tg.tgUtils.extend(options, arguments[0]);
 		}
 
 		if (options.success !== undefined || options.error !== undefined) {
@@ -1425,7 +1420,7 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
 		}
 
 		//TODO: potentially the most inefficient call in the whole lib
-		options.data = tg.utils.getDirtyGraph(self);
+		options.data = tg.tgUtils.getDirtyGraph(self);
 
 		if (options.data === null) {
 			// there was no data to save
@@ -1478,29 +1473,22 @@ tg.exportSymbol('tg.TiraggoEntityCollection.save', tg.TiraggoEntityCollection.sa
 ***********************************************/ 
 ﻿/*global tg */
 
-//
-//    Copyright (c) Mike Griffin, 2013 
-//
+// Copyright (c) Mike Griffin 2013, 2014 
 
 tg.defineEntity = function (typeName, constrctor) {
 	var isAnonymous = (typeof (typeName) !== 'string'), tgCtor, Ctor = isAnonymous ? arguments[0] : arguments[1];
 
-	tgCtor = function (data) {
+	tgCtor = function (createOptions) {
 		this.tg = {};
 
 		//MUST do this here so that obj.hasOwnProperty actually returns the keys in the object!
-		Ctor.call(this);
+		Ctor.call(this, createOptions);
 
 		//call apply defaults here before change tracking is enabled
 		this.applyDefaults();
 
 		//call the init method on the base prototype
 		this.init();
-
-		// finally, if we were given data, populate it
-		if (data) {
-			this.populateEntity(data);
-		}
 	};
 
 	//Setup the prototype chain correctly
@@ -1522,9 +1510,7 @@ tg.exportSymbol('tg.defineEntity', tg.defineEntity);
 ***********************************************/ 
 ﻿/*global tg */
 
-//
-//    Copyright (c) Mike Griffin, 2013 
-//
+// Copyright (c) Mike Griffin 2013, 2014 
 
 tg.defineCollection = function (typeName, entityName) {
 	var isAnonymous = (typeof (typeName) !== 'string'), tgCollCtor, ctorName = isAnonymous ? arguments[0] : arguments[1];

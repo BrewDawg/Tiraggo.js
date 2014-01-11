@@ -1,8 +1,6 @@
 ﻿/*global tg, utils */
 
-//
-//    Copyright (c) Mike Griffin, 2013 
-//
+// Copyright (c) Mike Griffin 2013, 2014 
 
 tg.TiraggoEntity = function () { //empty constructor
 	var extenders = [];
@@ -16,13 +14,12 @@ tg.TiraggoEntity = function () { //empty constructor
 		var self = this;
 
 		//build out the 'es' utility object
-		self.tg.___tgEntity___ = tg.utils.newId(); // assign a unique id so we can test objects with this key, do equality comparison, etc...
 		self.tg.ignorePropertyChanged = false;
 		self.tg.originalValues = {};
 		self.tg.isLoading = ko.observable(false);
 
 		//start change tracking
-		tg.utils.startTracking(self);
+		tg.tgUtils.startTracking(self);
 
 		// before populating the data, call each extender to add the required functionality to our object        
 		ko.utils.arrayForEach(extenders, function (extender) {
@@ -121,7 +118,7 @@ tg.TiraggoEntity = function () { //empty constructor
 
 							// This is a core column ...
 							if (srcValue !== null && srcValue instanceof Date) {
-								stripped[key] = utils.dateParser.serialize(srcValue);
+								stripped[key] = tgUtils.dateParser.serialize(srcValue);
 							} else {
 								stripped[key] = srcValue;
 							}
@@ -154,10 +151,10 @@ tg.TiraggoEntity = function () { //empty constructor
 			this.tg.originalValues = {};
 
 			//populate the entity with data back from the server...
-			tg.utils.copyDataIntoEntity(self, data);
+			tg.tgUtils.copyDataIntoEntity(self, data);
 
 			//expand the Extra Columns
-			tg.utils.expandExtraColumns(self, true);
+			tg.tgUtils.expandExtraColumns(self, true);
 
 			for (prop in data) {
 				if (data.hasOwnProperty(prop)) {
@@ -316,7 +313,7 @@ tg.TiraggoEntity = function () { //empty constructor
 		};
 
 		if (arguments.length === 1 && arguments[0] && typeof arguments[0] === 'object') {
-			tg.utils.extend(options, arguments[0]);
+			tg.tgUtils.extend(options, arguments[0]);
 		} else {
 			options.data = primaryKey;
 			options.success = success;
@@ -349,7 +346,7 @@ tg.TiraggoEntity = function () { //empty constructor
 		}
 
 		if (arguments.length === 1 && arguments[0] && typeof arguments[0] === 'object') {
-			tg.utils.extend(options, arguments[0]);
+			tg.tgUtils.extend(options, arguments[0]);
 		}
 
 		if (options.success !== undefined || options.error !== undefined) {
@@ -359,7 +356,7 @@ tg.TiraggoEntity = function () { //empty constructor
 		}
 
 		// Get all of the dirty data in the entire object graph
-		options.data = tg.utils.getDirtyGraph(self);
+		options.data = tg.tgUtils.getDirtyGraph(self);
 
 		if (options.data === null) {
 			// there was no data to save

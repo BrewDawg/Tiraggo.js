@@ -1,12 +1,10 @@
 ﻿/*global tg, ko*/
 
-//
-//    Copyright (c) Mike Griffin, 2013 
-//
+// Copyright (c) Mike Griffin 2013, 2014 
 
-var utils = {
+var tgUtils = {
 
-	dateParser: new tg.DateParser(),
+	dateParser: new tg.tgDateParser(),
 
 	copyDataIntoEntity: function (target, source, tgColumnMapOnly) {
 		var prop, srcProp;
@@ -32,7 +30,7 @@ var utils = {
 				srcProp = source[prop];
 
 				if (typeof srcProp === "string") {
-					srcProp = utils.dateParser.deserialize(srcProp);
+					srcProp = tgUtils.dateParser.deserialize(srcProp);
 				}
 
 				if (ko.isObservable(target[prop]) || ko.isComputed(target[prop])) { //set the observable property
@@ -44,6 +42,27 @@ var utils = {
 		}
 
 		return target;
+	},
+
+	observable: function (value) {
+	    var self = this;
+	    var _prop = value;
+
+	    // self.__ko_proto__ = '';
+
+	    function observableValue() {
+
+	        // self.__ko_proto__ = '';
+
+	        if (arguments.length > 0) {
+	            _prop = arguments[0];
+	            return this;
+	        } else {
+	            return _prop;
+	        }
+	    }
+
+	    return observableValue;
 	},
 
 	extend: function (target, source) {
@@ -135,7 +154,7 @@ var utils = {
 				}
 
 				if (entity.hasOwnProperty(propertyName) && ko.isObservable(property)) {
-					utils.addPropertyChangedHandlers(entity, propertyName);
+					tgUtils.addPropertyChangedHandlers(entity, propertyName);
 				}
 			}
 		}
@@ -250,16 +269,7 @@ var utils = {
 	}
 };
 
-utils.newId = (function () {
-	var seedId = new Date().getTime();
-
-	return function () {
-		return (seedId = seedId + 1);
-	};
-
-} ());
-
-tg.utils = utils;
+tg.tgUtils = tgUtils;
 
 tg.exportSymbol('tg.extend', tg.extend);
 tg.exportSymbol('tg.startTracking', tg.startTracking);

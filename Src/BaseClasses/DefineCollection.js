@@ -1,8 +1,6 @@
 ﻿/*global tg */
 
-//
-//    Copyright (c) Mike Griffin, 2013 
-//
+// Copyright (c) Mike Griffin 2013, 2014 
 
 tg.defineCollection = function (typeName, entityName) {
 	var isAnonymous = (typeof (typeName) !== 'string'), tgCollCtor, ctorName = isAnonymous ? arguments[0] : arguments[1];

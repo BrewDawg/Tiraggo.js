@@ -1,19 +1,17 @@
 ﻿/*global tg*/
 
-//
-//    Copyright (c) Mike Griffin, 2013 
-//
+// Copyright (c) Mike Griffin 2013, 2014 
 
 tg.TiraggoEntityCollection = function () {
 	var obs = ko.observableArray([]);
 
 	//define the 'tg' utility object
 	obs.tg = {};
+	obs.tg.___TiraggoCollection___ = true;
 
 	//add all of our extra methods to the array
 	ko.utils.extend(obs, tg.TiraggoEntityCollection.fn);
 
-	obs.tg['___TiraggoCollection___'] = tg.utils.newId(); // assign a unique id so we can test objects with this key, do equality comparison, etc...
 	obs.tg.deletedEntities = new ko.observableArray();
 	obs.tg.deletedEntities([]);
 	obs.tg.isLoading = ko.observable(false);
@@ -354,7 +352,7 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
 		};
 
 		if (arguments.length === 1 && arguments[0] && typeof arguments[0] === 'object') {
-			tg.utils.extend(options, arguments[0]);
+			tg.tgUtils.extend(options, arguments[0]);
 		} else {
 			options.success = success;
 			options.error = error;
@@ -374,7 +372,7 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
 		options = { success: success, error: error, state: state, route: self.tgRoutes['save'] };
 
 		if (arguments.length === 1 && arguments[0] && typeof arguments[0] === 'object') {
-			tg.utils.extend(options, arguments[0]);
+			tg.tgUtils.extend(options, arguments[0]);
 		}
 
 		if (options.success !== undefined || options.error !== undefined) {
@@ -384,7 +382,7 @@ tg.TiraggoEntityCollection.fn = { //can't do prototype on this one bc its a func
 		}
 
 		//TODO: potentially the most inefficient call in the whole lib
-		options.data = tg.utils.getDirtyGraph(self);
+		options.data = tg.tgUtils.getDirtyGraph(self);
 
 		if (options.data === null) {
 			// there was no data to save

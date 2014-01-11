@@ -1,8 +1,6 @@
 ﻿/*global tg*/
 
-//
-//    Copyright (c) Mike Griffin, 2013 
-//
+// Copyright (c) Mike Griffin 2013, 2014 
 
 //#region TypeCache Methods
 tg.getType = function (typeName) {

@@ -1,8 +1,6 @@
 ﻿/*global window*/
 
-//
-//    Copyright (c) Mike Griffin, 2013 
-//
+// Copyright (c) Mike Griffin 2013, 2014 
 
 var tg = window['tg'] = {}; //define root namespace
 
@@ -34,7 +32,7 @@ var extend = function (target, source) {
 
 config = extend(config, {
 	//defines the namespace where the Business Objects will be stored
-	namespace: 'tg.objects'
+	namespace: 'tg'
 });
 
 //ensure the namespace is built out...

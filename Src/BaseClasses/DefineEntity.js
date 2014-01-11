@@ -1,28 +1,21 @@
 ﻿/*global tg */
 
-//
-//    Copyright (c) Mike Griffin, 2013 
-//
+// Copyright (c) Mike Griffin 2013, 2014 
 
 tg.defineEntity = function (typeName, constrctor) {
 	var isAnonymous = (typeof (typeName) !== 'string'), tgCtor, Ctor = isAnonymous ? arguments[0] : arguments[1];
 
-	tgCtor = function (data) {
+	tgCtor = function (createOptions) {
 		this.tg = {};
 
 		//MUST do this here so that obj.hasOwnProperty actually returns the keys in the object!
-		Ctor.call(this);
+		Ctor.call(this, createOptions);
 
 		//call apply defaults here before change tracking is enabled
 		this.applyDefaults();
 
 		//call the init method on the base prototype
 		this.init();
-
-		// finally, if we were given data, populate it
-		if (data) {
-			this.populateEntity(data);
-		}
 	};
 
 	//Setup the prototype chain correctly

@@ -1,10 +1,8 @@
 ﻿/*global tg*/
 
-//
-//    Copyright (c) Mike Griffin, 2013 
-//
+// Copyright (c) Mike Griffin 2013, 2014 
 
-tg.DateParser = function () {
+tg.tgDateParser = function () {
 
 	// From the Server
 	this.deserialize = function (date) {

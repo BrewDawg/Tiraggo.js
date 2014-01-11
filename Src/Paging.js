@@ -1,10 +1,8 @@
 /*global tg*/
 
-//
-//    Copyright (c) Mike Griffin, 2013 
-//
+// Copyright (c) Mike Griffin 2013, 2014 
 
-tg.PagerFilterCriteria = function () {
+tg.tgPagerFilterCriteria = function () {
 	this.column = null;
 	this.criteria1 = null;
 	this.criteria2 = null;
@@ -12,12 +10,12 @@ tg.PagerFilterCriteria = function () {
 	this.conjuction = "AND";
 };
 
-tg.PagerSortCriteria = function () {
+tg.tgPagerSortCriteria = function () {
 	this.column = null;
 	this.direction = "ASC";
 };
 
-tg.PagerRequest = function () {
+tg.tgPagerRequest = function () {
 	this.getTotalRows = true;
 	this.totalRows = 0;
 	this.pageSize = 20;
