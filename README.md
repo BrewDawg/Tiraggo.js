@@ -1,5 +1,5 @@
 Tiraggo.js
 ==========
 
-See http://www.tiraggo.com/tiraggojs/index.html
+See http://www.tiraggo.com/tiraggojs/index.html#GettingStartedAbout
 
