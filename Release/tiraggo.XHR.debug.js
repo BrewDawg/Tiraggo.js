@@ -2,7 +2,7 @@
 // The Tiraggo.js JavaScript library v2.1.0 
 // Copyright 2013, 2014 (c) Mike Griffin 
 // 
-// Built on Sun 01/12/2014 at  8:07:56.05   
+// Built on Sun 02/23/2014 at 13:49:49.88   
 // https://github.com/BrewDawg/Tiraggo.js 
 // 
 // License: MIT 
@@ -1693,7 +1693,7 @@ tg.exportSymbol('tg.defineCollection', tg.defineCollection);
 ﻿/*global tg, alert*/
 
 //
-//    Copyright (c) Mike Griffin, 2013 
+//    Copyright (c) Mike Griffin, 2013, 2014
 //
 
 tg.XMLHttpRequestProvider = function () {
@@ -1754,7 +1754,7 @@ tg.XMLHttpRequestProvider = function () {
 		return response;
 	};
 
-	// Called by the entityspacorm.js framework when working with entities
+	// Called by the Tiraggo.js framework when working with entities
 	this.execute = function (options) {
 
 		var path = null, xmlHttp, success, error, response;
@@ -1769,7 +1769,7 @@ tg.XMLHttpRequestProvider = function () {
 		path = this.baseURL + options.url;
 
 		// Make the HTTP request
-		xmlHttp.open("POST", path, options.async || false);
+		xmlHttp.open(options.type, path, options.async || false);
 		xmlHttp.setRequestHeader("Content-type", "application/json; charset=utf-8");
 		// Hack to make it work with FireFox
 		xmlHttp.setRequestHeader("accept", "gzip,deflate,text/html,application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");			
@@ -1806,7 +1806,7 @@ tg.XMLHttpRequestProvider = function () {
 	};
 
 	// So developers can make their own requests, synchronous or aynchronous
-	this.makeRequest = function (url, methodName, params, successCallback, failureCallback, state) {
+	this.makeRequest = function (url, methodName, methodType, params, successCallback, failureCallback, state) {
 
 		var theData = null, path = null, async = false, xmlHttp, success, failure;
 
@@ -1823,7 +1823,7 @@ tg.XMLHttpRequestProvider = function () {
 		path = url + methodName;
 
 		// Make the HTTP request
-		xmlHttp.open("POST", path, async);
+		xmlHttp.open(methodType || 'GET', path, async);
 		xmlHttp.setRequestHeader("Content-type", "application/json; charset=utf-8");
 		// Hack to make it work with FireFox
 		xmlHttp.setRequestHeader("accept", "gzip,deflate,text/html,application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");		
