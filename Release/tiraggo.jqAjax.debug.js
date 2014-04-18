@@ -2,7 +2,7 @@
 // The Tiraggo.js JavaScript library v2.1.0 
 // Copyright 2013, 2014 (c) Mike Griffin 
 // 
-// Built on Sun 02/23/2014 at 13:49:47.29   
+// Built on Thu 04/17/2014 at 20:08:34.62   
 // https://github.com/BrewDawg/Tiraggo.js 
 // 
 // License: MIT 
@@ -600,8 +600,7 @@ tg.defineLazyLoader = function (entity, propName) {
 /*********************************************** 
 * FILE: ..\Src\BaseClasses\tgEntity.js 
 ***********************************************/ 
-﻿/*global tg, utils */
-
+﻿
 // Copyright (c) Mike Griffin 2013, 2014 
 
 tg.TiraggoEntity = function () { //empty constructor
@@ -711,6 +710,11 @@ tg.TiraggoEntity = function () { //empty constructor
 	this.populateEntity = function (data) {
 	    var entity = this;
 	    tg.TiraggoEntity.prototype._populateEntity(entity, data);
+	};
+	
+	this.load = function (options) {
+	    var entity = this;
+	    return tg.TiraggoEntity.prototype._load(entity, options);
 	};
 
 	this.loadByPrimaryKey = function (primaryKey, success, error, state) { // or single argument of options

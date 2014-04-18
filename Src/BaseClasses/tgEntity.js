@@ -1,5 +1,4 @@
-﻿/*global tg, utils */
-
+﻿
 // Copyright (c) Mike Griffin 2013, 2014 
 
 tg.TiraggoEntity = function () { //empty constructor
@@ -109,6 +108,11 @@ tg.TiraggoEntity = function () { //empty constructor
 	this.populateEntity = function (data) {
 	    var entity = this;
 	    tg.TiraggoEntity.prototype._populateEntity(entity, data);
+	};
+	
+	this.load = function (options) {
+	    var entity = this;
+	    return tg.TiraggoEntity.prototype._load(entity, options);
 	};
 
 	this.loadByPrimaryKey = function (primaryKey, success, error, state) { // or single argument of options
