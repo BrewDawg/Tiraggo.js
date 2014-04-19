@@ -95,10 +95,6 @@ var tgUtils = {
 
 					mappedName = obj.tgColumnMap[propertyName];
 
-					if (mappedName !== undefined) {
-						mappedName = propertyName;
-					}
-
 					mappedName = mappedName || propertyName;
 
 					if (ko.utils.arrayIndexOf(obj.ModifiedColumns(), mappedName) === -1) {
