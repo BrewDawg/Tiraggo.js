@@ -1,8 +1,8 @@
 //-------------------------------------------------------------------- 
-// The Tiraggo.js JavaScript library v2.1.0 
+// The Tiraggo.js JavaScript library v2.1.5 
 // Copyright 2013, 2014 (c) Mike Griffin 
 // 
-// Built on Sat 04/19/2014 at 13:54:23.34   
+// Built on Sat 04/19/2014 at 14:16:14.93   
 // https://github.com/BrewDawg/Tiraggo.js 
 // 
 // License: MIT 
