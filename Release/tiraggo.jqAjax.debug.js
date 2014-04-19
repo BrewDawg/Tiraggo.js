@@ -2,7 +2,7 @@
 // The Tiraggo.js JavaScript library v2.1.0 
 // Copyright 2013, 2014 (c) Mike Griffin 
 // 
-// Built on Sat 04/19/2014 at 13:22:38.11   
+// Built on Sat 04/19/2014 at 13:54:23.34   
 // https://github.com/BrewDawg/Tiraggo.js 
 // 
 // License: MIT 
@@ -309,6 +309,10 @@ var tgUtils = {
 				if (obj.tg.ignorePropertyChanged === false) {
 
 					mappedName = obj.tgColumnMap[propertyName];
+					
+					if(mappedName === undefined) {
+						return;
+					}
 
 					mappedName = mappedName || propertyName;
 

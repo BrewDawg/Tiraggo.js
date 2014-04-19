@@ -94,6 +94,10 @@ var tgUtils = {
 				if (obj.tg.ignorePropertyChanged === false) {
 
 					mappedName = obj.tgColumnMap[propertyName];
+					
+					if(mappedName === undefined) {
+						return;
+					}
 
 					mappedName = mappedName || propertyName;
 
